@@ -1,0 +1,7 @@
+{
+  "name": "meeting-collab-platform",
+  "version": "0.1.0",
+  "private": true,
+  "description": "项目会议与协作管理平台本地原型",
+  "scripts": { "start": "node server.mjs" }
+}

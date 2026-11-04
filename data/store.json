@@ -35,6 +35,33 @@
       "password": "15f44e488728877494cd0eaa675c50608e371b21b7f753b91a160ebf0aced31188c4043c96e345a13677e73c0a1bf3029e6982136feafad5cf73ea3b880ed568",
       "avatar": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjggMTI4Ij48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImciIHgxPSIwIiB5MT0iMCIgeDI9IjEiIHkyPSIxIj48c3RvcCBzdG9wLWNvbG9yPSJoc2woMjQ5IDY2JSA2MSUpIi8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSJoc2woMjkxIDU4JSA0MyUpIi8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHJlY3Qgd2lkdGg9IjEyOCIgaGVpZ2h0PSIxMjgiIHJ4PSI2NCIgZmlsbD0idXJsKCNnKSIvPjxjaXJjbGUgY3g9IjEwMCIgY3k9IjI4IiByPSIxOCIgZmlsbD0iI2ZmZiIgb3BhY2l0eT0iLjE2Ii8+PHRleHQgeD0iNjQiIHk9IjgyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPSI1OCIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iI2ZmZiI+5pWPPC90ZXh0Pjwvc3ZnPg==",
       "avatarMode": "default"
+    },
+    {
+      "id": "595f36b6-a855-4079-982a-462c3e5136d1",
+      "name": "英国短毛猫",
+      "account": "123456",
+      "salt": "4bee59048f43391d9c82992c19c79541",
+      "password": "8bf58119b8ceabf41a25dee39ba4c6b216a01e6050bcb488c1b840c33cab58e2e62fdd4e55adc29ab0993532affa7857e89323d2ac04c0d0f9adc9df2034c9fa",
+      "avatar": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjggMTI4Ij48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImciIHgxPSIwIiB5MT0iMCIgeDI9IjEiIHkyPSIxIj48c3RvcCBzdG9wLWNvbG9yPSJoc2woMTY4IDY2JSA2MSUpIi8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSJoc2woMjEwIDU4JSA0MyUpIi8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHJlY3Qgd2lkdGg9IjEyOCIgaGVpZ2h0PSIxMjgiIHJ4PSI2NCIgZmlsbD0idXJsKCNnKSIvPjxjaXJjbGUgY3g9IjEwMCIgY3k9IjI4IiByPSIxOCIgZmlsbD0iI2ZmZiIgb3BhY2l0eT0iLjE2Ii8+PHRleHQgeD0iNjQiIHk9IjgyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPSI1OCIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iI2ZmZiI+54yrPC90ZXh0Pjwvc3ZnPg==",
+      "avatarMode": "default"
+    },
+    {
+      "id": "ad02e00d-9c52-43d3-bbf4-2499b0cb99e5",
+      "name": "xyl",
+      "account": "xyl123",
+      "salt": "ecf1b02230f74acf593f7d9ff85fbebe",
+      "password": "3facb5008b285bd2379565f4bac62e0f0a3631babf9756c3798679207cd3633518c6a029c61842c382caeec64373f7f368d6cec02ff8369dc7720dffb0775776",
+      "avatar": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjggMTI4Ij48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImciIHgxPSIwIiB5MT0iMCIgeDI9IjEiIHkyPSIxIj48c3RvcCBzdG9wLWNvbG9yPSJoc2woNDAgNjYlIDYxJSkiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9ImhzbCg4MiA1OCUgNDMlKSIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMjgiIGhlaWdodD0iMTI4IiByeD0iNjQiIGZpbGw9InVybCgjZykiLz48Y2lyY2xlIGN4PSIxMDAiIGN5PSIyOCIgcj0iMTgiIGZpbGw9IiNmZmYiIG9wYWNpdHk9Ii4xNiIvPjx0ZXh0IHg9IjY0IiB5PSI4MiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iNTgiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiNmZmYiPmw8L3RleHQ+PC9zdmc+",
+      "avatarMode": "default"
+    },
+    {
+      "id": "8a480449-f883-4e79-bd4d-2bfcc28c8469",
+      "name": "yan",
+      "account": "yann",
+      "salt": "e2fe8011f6a1423f8a933d1a9428c9e1",
+      "password": "0dcbc65b78e7f0d064b10865eb7c4c7751e36d4b50efdc9794be2a10956a92e4de38590ad892240aed1c24da1dd76484ce77b439e44a7406ab0eae08dae2fa44",
+      "avatar": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjggMTI4Ij48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImciIHgxPSIwIiB5MT0iMCIgeDI9IjEiIHkyPSIxIj48c3RvcCBzdG9wLWNvbG9yPSJoc2woMTQ5IDY2JSA2MSUpIi8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSJoc2woMTkxIDU4JSA0MyUpIi8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHJlY3Qgd2lkdGg9IjEyOCIgaGVpZ2h0PSIxMjgiIHJ4PSI2NCIgZmlsbD0idXJsKCNnKSIvPjxjaXJjbGUgY3g9IjEwMCIgY3k9IjI4IiByPSIxOCIgZmlsbD0iI2ZmZiIgb3BhY2l0eT0iLjE2Ii8+PHRleHQgeD0iNjQiIHk9IjgyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPSI1OCIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iI2ZmZiI+bjwvdGV4dD48L3N2Zz4=",
+      "avatarMode": "default"
     }
   ],
   "workspaces": [
@@ -79,6 +106,12 @@
           "role": "成员",
           "joined": "2026-10-16",
           "color": "blue"
+        },
+        {
+          "id": "595f36b6-a855-4079-982a-462c3e5136d1",
+          "name": "英国短毛猫",
+          "role": "成员",
+          "joined": "2026-11-03"
         }
       ],
       "meetings": [
@@ -494,7 +527,7 @@
           "checked": [],
           "checkedIds": [],
           "attendance": [],
-          "files": 0,
+          "files": 1,
           "summary": "",
           "summaryHtml": "",
           "summaryVersion": 1,
@@ -597,7 +630,7 @@
           "summary": "",
           "summaryHtml": "",
           "summaryVersion": 1,
-          "files": 1,
+          "files": 2,
           "assignments": 1,
           "hostId": "u-1",
           "organizerId": "u-4",
@@ -633,7 +666,7 @@
           "summary": "",
           "summaryHtml": "",
           "summaryVersion": 1,
-          "files": 1,
+          "files": 4,
           "assignments": 1,
           "hostId": "u-3",
           "organizerId": "u-2",
@@ -645,7 +678,66 @@
           "checkedIds": [],
           "attendance": [],
           "actualStart": null,
-          "actualEnd": null
+          "actualEnd": null,
+          "materialAnalyses": [
+            {
+              "id": "6555a927-a5d1-4c2c-b585-2d7fe822a1fc",
+              "version": 1,
+              "status": "已完成",
+              "progress": 100,
+              "stage": "分析完成",
+              "totalFiles": 2,
+              "completedFiles": 2,
+              "transcriptAudioId": null,
+              "transcriptId": null,
+              "transcriptLabel": "未关联转写稿",
+              "fileIds": [
+                "643bff99-3d12-4082-bfdb-2f5089df176f",
+                "4a40c2ee-ddab-47cd-86f5-dd4eb31c785b"
+              ],
+              "fileNames": [
+                "11111.docx",
+                "走访时段记录_11-02.md"
+              ],
+              "provider": "阿里云百炼",
+              "model": "qwen3.8-flash",
+              "createdBy": "张伟",
+              "createdById": "u-1",
+              "createdAt": "2026-11-04T08:06:29.204Z",
+              "consentAt": "2026-11-04T08:06:29.204Z",
+              "updatedAt": "2026-11-04T08:07:54.638Z",
+              "result": "**AI 草稿：会议协作资料分析**\n*注：本内容基于提供的资料生成，非正式会议纪要，需人工核对。本次未关联转写稿，仅依据所选资料进行分析。*\n\n### 1. 会议主题\n服务站走访时间确认（但资料主要涉及系统功能反馈与问题清单）\n\n### 2. 讨论要点\n由于缺乏会议转写稿，以下要点完全基于文档《11111.docx》和《走访时段记录_11-02.md》的内容提取：\n\n*   **系统功能缺陷与需求：**\n    *   **中文输入障碍：** “会议/工作日志查询”、“会议纪要撰写”及“主持人编辑”环节无法进行中文输入。\n    *   **导出限制：** 日志和会议纪要目前不支持 Word 或 PDF 格式导出。\n    *   **筛选逻辑疑问：** “会议/工作日志”界面存在两个“年月日”筛选条件，用户质疑其必要性或含义。\n    *   **数据关联异常：** 部分工作日志能关联并显示对应会议，部分则不显示，原因不明。\n    *   **交互体验优化：** 从“工作分配”页点击“查看工作日志”时，直接跳转至大页面而非具体条目；建议支持直接跳转到对应的具体日志条目。\n    *   **模糊查询需求：** 提出是否可实现“模糊查询”功能。\n*   **权限与标签机制：**\n    *   **个人标签：** 询问添加“个人标签”的具体作用；关于“什么才算符合标签的会议”已标记为“已解决”，但未说明具体规则。\n    *   **分工权限：** 确认目前系统允许成员进行分工操作。\n*   **服务站走访安排：**\n    *   **候选时段：** 工作日下午、周末上午。\n    *   **联系人状态：** 现场联系人待服务站最终确认。\n    *   **记录人：** 赵敏。\n\n### 3. 资料与发言的对应关系\n*   **无转写稿对应：** 因本次没有可用转写稿，无法建立“会议中明确说过”与“资料中记载”的直接交叉验证关系。所有结论均源自静态文档资料。\n*   **资料内部矛盾/缺失：** 《11111.docx》标题暗示为会议相关反馈，但内容主要为软件Bug和功能建议，与会议主题“服务站走访时间确认”在业务场景上看似无关，可能存在资料选取错误或会议包含多个议题的情况。\n\n### 4. 明确结论\n*   **系统现状：** 当前系统在中文输入、文件导出方面存在功能性缺失；成员分工权限已开放。\n*   **已解决项：** 仅“什么才算符合标签的会议”这一具体问题被标记为“已解决”。\n*   **走访初步意向：** 社区走访的候选时间段确定为“工作日下午”和“周末上午”。\n\n### 5. 后续事项\n| 事项 | 负责人 | 日期 | 备注 |\n| :--- | :--- | :--- | :--- |\n| 修复中文输入兼容性问题 | 未明确 | 未明确 | 涉及查询、撰写、编辑模块 |\n| 开发 Word/PDF 导出功能 | 未明确 | 未明确 | 针对日志和会议纪要 |\n| 评估“模糊查询”技术可行性 | 未明确 | 未明确 | 需技术团队介入 |\n| 排查日志与会议关联显示不一致的原因 | 未明确 | 未明确 | 区分是录入遗漏还是同步故障 |\n| 优化“工作分配”到“日志详情”的跳转层级 | 未明确 | 未明确 | 实现直接跳转至具体条目 |\n| 解释双日期筛选器的业务含义或移除冗余 | 未明确 | 未明确 | 确认是否为Bug或特定用途 |\n| 补充“符合标签的会议”的具体判定规则文档 | 未明确 | 未明确 | 虽标记已解决，但细节缺失 |\n| 确认服务站现场联系人 | 未明确 | 未明确 | 需服务站最终确认 |\n| 确定最终走访时间（工作日/周末） | 未明确 | 未明确 | 基于候选时段决策 |\n\n### 6. 待确认问题\n1.  **资料关联性：** 《11111.docx》中的系统功能反馈是否与“服务站走访时间确认”这一会议主题有关？若无关，是否误选了资料？\n2.  **序号错误：** 《11111.docx》中存在两个“6.”，实际应为6和7，后续顺延至8，需核实原始文档排版。\n3.  **“已解决”的细节：** 第3点提到标签定义问题“已解决”，但资料中未提供具体的解决方案或规则，需向相关人员确认具体标准。\n4.  **双日期筛选器用途：** 需确认两个“年月日”筛选条件是分别代表“创建时间”和“发生时间”，还是纯粹的系统设计失误。\n5.  **日志关联缺失根因：** 需技术排查部分日志未关联会议是由于数据录入不规范还是系统同步机制故障。",
+              "completedAt": "2026-11-04T08:07:54.638Z"
+            },
+            {
+              "id": "c638c2c8-84a0-4e66-8c86-1e34dcb9d8d5",
+              "version": 2,
+              "status": "已完成",
+              "progress": 100,
+              "stage": "分析完成",
+              "totalFiles": 1,
+              "completedFiles": 1,
+              "transcriptAudioId": "05ef89dc-b60e-4e1a-ac22-88c0ed93bf40",
+              "transcriptId": "eb639bc2-68d4-41fb-8966-523fc993cefe",
+              "transcriptLabel": "转写第1版",
+              "fileIds": [
+                "643bff99-3d12-4082-bfdb-2f5089df176f"
+              ],
+              "fileNames": [
+                "11111.docx"
+              ],
+              "provider": "阿里云百炼",
+              "model": "qwen3.8-flash",
+              "createdBy": "张伟",
+              "createdById": "u-1",
+              "createdAt": "2026-11-04T08:23:49.637Z",
+              "consentAt": "2026-11-04T08:23:49.637Z",
+              "transcriptLength": 75,
+              "updatedAt": "2026-11-04T08:24:19.717Z",
+              "result": "## 内容概览\n本次核对基于提供的录音转写稿与资料正文（`11111.docx`）。会议标题为“服务站走访时间确认”，但**转写稿内容与标题完全无关**，且**资料正文内容也与标题及转写稿均无关联**。三方信息存在严重的不一致性。\n\n## 可确认的信息\n*   **转写稿内容**：描述了院子门口的地铁站、树上的桃子、海豚和金鱼的表演以及邮局门前的蓝色邮箱。[来源：转写稿]\n*   **资料正文内容**：主要涉及某软件系统（疑似会议/工作日志管理系统）的功能问题与建议，包括中文输入限制、模糊查询需求、筛选器重复、关联显示异常、导出功能缺失、个人标签用途已解决、成员分工权限现状以及跳转逻辑优化建议。[来源：11111.docx, Page 1]\n\n## 资料与发言对照\n*   **关联性分析**：**无关联**。\n    *   转写稿描述的是自然景观和动物表演场景。\n    *   资料正文描述的是软件系统的Bug和功能建议。\n    *   两者之间没有任何共同的话题、实体或逻辑联系。\n*   **标题一致性**：**不一致**。\n    *   会议标题：“服务站走访时间确认”。\n    *   转写稿内容：未提及任何关于“服务站”、“走访”或“时间确认”的信息。\n    *   资料正文内容：未提及任何关于“服务站”、“走访”或“时间确认”的信息。\n    *   **结论**：提供的转写稿和资料文件可能并非本次会议的真实记录，或者上传了错误的文件。\n\n## 明确提出的后续事项\n*   **资料中提出的建议/待办**（仅依据 `11111.docx`，非会议决定）：\n    1.  针对无法中文输入的问题，探讨是否能实现模糊查询。[来源：11111.docx, Page 1, Item 1]\n    2.  解释为何“会议/工作日志”存在两个年月日筛选选项。[来源：11111.docx, Page 1, Item 2]\n    3.  排查部分工作日志关联了会议但未显示的原因。[来源：11111.docx, Page 1, Item 5]\n    4.  增加日志/会议纪要的 Word 和 PDF 格式导出功能。[来源：11111.docx, Page 1, Item 6 (第二个)]\n    5.  优化跳转逻辑，支持从工作分配页面直接跳转到对应的具体日志。[来源：11111.docx, Page 1, Item 6 (第一个)]\n*   **负责人/日期**：未明确。[来源：11111.docx]\n\n## 待确认问题\n1.  **文件匹配性**：请确认上传的转写稿和 `11111.docx` 是否对应会议标题“服务站走访时间确认”？目前看来三者内容互不相关。\n2.  **真实议题**：如果上述文件有误，请提供正确的转写稿或资料，以核实关于“服务站走访时间”的具体讨论内容。\n3.  **资料来源**：`11111.docx` 中的系统功能问题是否与本次会议有任何间接背景关系？（当前证据不支持此假设）。\n\n***\n*注：这是 AI 草稿，需人工核对。鉴于转写稿、资料正文与会议标题三者内容完全脱节，强烈建议重新检查源文件是否正确。*",
+              "completedAt": "2026-11-04T08:24:19.717Z"
+            }
+          ]
         }
       ],
       "assignments": [
@@ -677,7 +769,8 @@
             }
           ],
           "ownerId": "u-2",
-          "byId": "u-3"
+          "byId": "u-3",
+          "meetingId": "m-1"
         },
         {
           "id": "a-2",
@@ -689,7 +782,8 @@
           "version": 1,
           "changeHistory": [],
           "ownerId": "u-1",
-          "byId": "u-3"
+          "byId": "u-3",
+          "meetingId": "m-1"
         },
         {
           "id": "a-3",
@@ -701,7 +795,8 @@
           "version": 1,
           "changeHistory": [],
           "ownerId": "u-4",
-          "byId": "u-1"
+          "byId": "u-1",
+          "meetingId": "m-2"
         },
         {
           "id": "a-4",
@@ -713,7 +808,8 @@
           "version": 1,
           "changeHistory": [],
           "ownerId": "u-3",
-          "byId": "u-1"
+          "byId": "u-1",
+          "meetingId": "m-3"
         },
         {
           "id": "a-demo-5",
@@ -830,7 +926,8 @@
           "link": "整理第二轮访谈录音与主题编码",
           "authorId": "u-2",
           "version": 1,
-          "createdAt": "2026-11-01T16:42:00+08:00"
+          "createdAt": "2026-11-01T16:42:00+08:00",
+          "linkAssignmentId": "a-1"
         },
         {
           "id": "l-2",
@@ -841,7 +938,8 @@
           "link": "补充问卷样本分层说明",
           "authorId": "u-4",
           "version": 1,
-          "createdAt": "2026-10-31T18:10:00+08:00"
+          "createdAt": "2026-10-31T18:10:00+08:00",
+          "linkAssignmentId": "a-3"
         },
         {
           "id": "l-3",
@@ -852,7 +950,8 @@
           "link": "问卷结构与样本讨论",
           "authorId": "u-1",
           "version": 1,
-          "createdAt": "2026-10-30T12:05:00+08:00"
+          "createdAt": "2026-10-30T12:05:00+08:00",
+          "meetingId": "m-2"
         },
         {
           "id": "l-demo-4",
@@ -975,6 +1074,103 @@
         }
       ],
       "events": [
+        {
+          "id": "a1805563-2eae-4a67-9209-2cac96c8f456",
+          "kind": "AI资料分析",
+          "title": "分析了项目资料「_cgi-bin_mmwebwx-bin_webwxgetmsgimg__&MsgID=2827354823235922391&skey=@crypt_28243626_9e35c546b725f7c0a5b8acfdbb5b3af6&mmweb_appid=wx_webfilehelper.jpg」",
+          "detail": "张伟 · 阿里云百炼 人工复核草稿",
+          "date": "2026-11-04",
+          "meetingId": "m-demo-service",
+          "actorId": "u-1"
+        },
+        {
+          "id": "7a85e8d1-9aca-4346-91ce-e56231360677",
+          "kind": "AI资料分析",
+          "title": "分析了项目资料「11111.docx」",
+          "detail": "张伟 · 阿里云百炼 人工复核草稿",
+          "date": "2026-11-04",
+          "meetingId": "m-demo-report",
+          "actorId": "u-1"
+        },
+        {
+          "id": "e6179173-c9ee-4b2e-b175-58f95767e7d3",
+          "kind": "资料",
+          "title": "上传了会议资料",
+          "detail": "张伟 · 11111.docx",
+          "date": "2026-11-04",
+          "meetingId": "m-demo-report",
+          "actorId": "u-1"
+        },
+        {
+          "id": "48865fc9-d310-469d-9e1a-435485ec7db9",
+          "kind": "会议资料综合分析",
+          "title": "完成会议「服务站走访时间确认」的总体分析",
+          "detail": "张伟 · 阿里云百炼 人工复核草稿",
+          "date": "2026-11-04",
+          "meetingId": "m-demo-service",
+          "actorId": "u-1"
+        },
+        {
+          "id": "6ec1e869-5a9c-4f4a-9108-de2897995218",
+          "kind": "录音",
+          "title": "为会议「服务站走访时间确认」上传录音",
+          "detail": "张伟 · OSR_cn_000_0072_8k.wav",
+          "date": "2026-11-04",
+          "meetingId": "m-demo-service",
+          "actorId": "u-1"
+        },
+        {
+          "id": "fac46fa3-0371-408d-81b6-a52f371dbf5d",
+          "kind": "会议资料综合分析",
+          "title": "综合分析了会议「服务站走访时间确认」的转写与资料",
+          "detail": "张伟 · 阿里云百炼 人工复核草稿",
+          "date": "2026-11-04",
+          "meetingId": "m-demo-service",
+          "actorId": "u-1"
+        },
+        {
+          "id": "5cdda63e-18d1-4b9e-a373-aeeffd7a16a5",
+          "kind": "资料",
+          "title": "上传了会议资料",
+          "detail": "张伟 · _cgi-bin_mmwebwx-bin_webwxgetmsgimg__&MsgID=2827354823235922391&skey=@crypt_28243626_9e35c546b725f7c0a5b8acfdbb5b3af6&mmweb_appid=wx_webfilehelper.jpg",
+          "date": "2026-11-04",
+          "meetingId": "m-demo-service",
+          "actorId": "u-1"
+        },
+        {
+          "id": "bd19e9dd-2805-43ea-a1b9-74f4d20f4f24",
+          "kind": "资料",
+          "title": "上传了会议资料",
+          "detail": "张伟 · 11111.docx",
+          "date": "2026-11-04",
+          "meetingId": "m-demo-service",
+          "actorId": "u-1"
+        },
+        {
+          "id": "7edf1a8c-7848-493b-973c-dd18e3ef0313",
+          "kind": "录音分析",
+          "title": "完成会议「阶段建议结构讨论」录音分析",
+          "detail": "张伟 · 阿里云百炼 人工复核草稿",
+          "date": "2026-11-04",
+          "meetingId": "m-demo-planning",
+          "actorId": "u-1"
+        },
+        {
+          "id": "6c3fe787-3a9a-47fa-865e-832bf755e9fd",
+          "kind": "录音",
+          "title": "为会议「阶段建议结构讨论」上传录音",
+          "detail": "张伟 · OSR_cn_000_0072_8k.wav",
+          "date": "2026-11-04",
+          "meetingId": "m-demo-planning",
+          "actorId": "u-1"
+        },
+        {
+          "id": "005cdef8-bee6-417a-915c-673e1f432173",
+          "kind": "成员",
+          "title": "英国短毛猫 加入项目",
+          "detail": "接受项目邀请",
+          "date": "2026-11-03"
+        },
         {
           "id": "87ef7ecf-4bd0-46a0-9b9d-ba22a17b4b12",
           "kind": "会议",
@@ -1245,38 +1441,331 @@
           "meetingId": "m-demo-service"
         }
       ],
-      "invites": [],
+      "invites": [
+        {
+          "id": "b92296be-b27b-4206-b5eb-2ad6c683dc44",
+          "code": "4F7B24A129",
+          "createdAt": "2026-11-03T08:25:58.738Z",
+          "createdBy": "u-1",
+          "expiresAt": null,
+          "status": "有效"
+        },
+        {
+          "id": "ca3257af-1f0e-40c5-930b-45ab9ee5a96c",
+          "code": "8BDA7DE0B9",
+          "createdAt": "2026-11-03T08:25:25.592Z",
+          "createdBy": "u-1",
+          "expiresAt": "2026-11-10T08:25:25.592Z",
+          "status": "已失效"
+        },
+        {
+          "id": "a5893d88-c2d2-4ad6-b3b4-6a553658bb9a",
+          "code": "B062094BCD",
+          "createdAt": "2026-11-03T08:24:47.091Z",
+          "createdBy": "u-1",
+          "expiresAt": "2026-11-10T08:24:47.091Z",
+          "status": "已失效"
+        },
+        {
+          "id": "92bc8c75-bdfb-45d3-a2ca-1a522fc783c6",
+          "code": "942269E599",
+          "createdAt": "2026-11-03T08:08:23.895Z",
+          "createdBy": "u-1",
+          "expiresAt": "2026-11-10T08:08:23.895Z",
+          "status": "已失效"
+        },
+        {
+          "id": "276f086f-2c15-44d5-af92-e332ddb9cff2",
+          "code": "FE94A83435",
+          "createdAt": "2026-11-03T08:02:19.516Z",
+          "createdBy": "u-1",
+          "expiresAt": "2026-11-10T08:02:19.516Z",
+          "status": "已失效"
+        },
+        {
+          "id": "70afa655-101b-4dd1-9378-f235fcdb6a30",
+          "code": "2524FD381C",
+          "createdAt": "2026-11-03T07:59:53.713Z",
+          "createdBy": "u-1",
+          "expiresAt": "2026-11-10T07:59:53.713Z",
+          "status": "已失效"
+        },
+        {
+          "id": "b962f51b-f85e-4fb7-952e-1bb350f9d308",
+          "code": "25423670A4",
+          "createdAt": "2026-11-03T07:59:47.895Z",
+          "createdBy": "u-1",
+          "expiresAt": "2026-11-10T07:59:47.895Z",
+          "status": "已失效"
+        }
+      ],
       "accounts": [
         {
           "id": "u-1",
           "name": "张伟",
           "account": "lin",
           "salt": "60e02020e14423d3d10cc9d411503a0b",
-          "password": "276e834b4595d4902d81246361d885ed6dc08f18bc8a9ee06764412021784410fc2ea5afb8b86c908f2b1944dfd6f6153857022b4fcae4d8eceb897317c2e836"
+          "password": "276e834b4595d4902d81246361d885ed6dc08f18bc8a9ee06764412021784410fc2ea5afb8b86c908f2b1944dfd6f6153857022b4fcae4d8eceb897317c2e836",
+          "avatar": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjggMTI4Ij48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImciIHgxPSIwIiB5MT0iMCIgeDI9IjEiIHkyPSIxIj48c3RvcCBzdG9wLWNvbG9yPSJoc2woMTQ2IDY2JSA2MSUpIi8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSJoc2woMTg4IDU4JSA0MyUpIi8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHJlY3Qgd2lkdGg9IjEyOCIgaGVpZ2h0PSIxMjgiIHJ4PSI2NCIgZmlsbD0idXJsKCNnKSIvPjxjaXJjbGUgY3g9IjEwMCIgY3k9IjI4IiByPSIxOCIgZmlsbD0iI2ZmZiIgb3BhY2l0eT0iLjE2Ii8+PHRleHQgeD0iNjQiIHk9IjgyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPSI1OCIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iI2ZmZiI+5LyfPC90ZXh0Pjwvc3ZnPg==",
+          "avatarMode": "default"
         },
         {
           "id": "u-2",
           "name": "李娜",
           "account": "zhou",
           "salt": "70866c2bcc42a65352671b1aa45075c4",
-          "password": "d04fbe7ac025440dc746e51ccf9c0c48425b68873140d52543476475d5d5f288372f37d42bedd3754880ff49c354b3729fd45f661cb058ef66b45f8c899e893d"
+          "password": "d04fbe7ac025440dc746e51ccf9c0c48425b68873140d52543476475d5d5f288372f37d42bedd3754880ff49c354b3729fd45f661cb058ef66b45f8c899e893d",
+          "avatar": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjggMTI4Ij48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImciIHgxPSIwIiB5MT0iMCIgeDI9IjEiIHkyPSIxIj48c3RvcCBzdG9wLWNvbG9yPSJoc2woMjQyIDY2JSA2MSUpIi8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSJoc2woMjg0IDU4JSA0MyUpIi8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHJlY3Qgd2lkdGg9IjEyOCIgaGVpZ2h0PSIxMjgiIHJ4PSI2NCIgZmlsbD0idXJsKCNnKSIvPjxjaXJjbGUgY3g9IjEwMCIgY3k9IjI4IiByPSIxOCIgZmlsbD0iI2ZmZiIgb3BhY2l0eT0iLjE2Ii8+PHRleHQgeD0iNjQiIHk9IjgyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPSI1OCIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iI2ZmZiI+5aicPC90ZXh0Pjwvc3ZnPg==",
+          "avatarMode": "default"
         },
         {
           "id": "u-3",
           "name": "刘洋",
           "account": "chen",
           "salt": "6f124600e011891c40ca73f8dffa0ecc",
-          "password": "758cb179cf3a983a02830b5a4ff1c60d548dbec6688c0e58cb02cfd1f7b86d30584446efa90b10c0d950431800e258c44f2d9d85b29675fdb984f244b6e4f431"
+          "password": "758cb179cf3a983a02830b5a4ff1c60d548dbec6688c0e58cb02cfd1f7b86d30584446efa90b10c0d950431800e258c44f2d9d85b29675fdb984f244b6e4f431",
+          "avatar": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjggMTI4Ij48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImciIHgxPSIwIiB5MT0iMCIgeDI9IjEiIHkyPSIxIj48c3RvcCBzdG9wLWNvbG9yPSJoc2woNjQgNjYlIDYxJSkiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9ImhzbCgxMDYgNTglIDQzJSkiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48cmVjdCB3aWR0aD0iMTI4IiBoZWlnaHQ9IjEyOCIgcng9IjY0IiBmaWxsPSJ1cmwoI2cpIi8+PGNpcmNsZSBjeD0iMTAwIiBjeT0iMjgiIHI9IjE4IiBmaWxsPSIjZmZmIiBvcGFjaXR5PSIuMTYiLz48dGV4dCB4PSI2NCIgeT0iODIiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9IjU4IiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjZmZmIj7mtIs8L3RleHQ+PC9zdmc+",
+          "avatarMode": "default"
         },
         {
           "id": "u-4",
           "name": "赵敏",
           "account": "xu",
           "salt": "8527a7fd025f7f58ffb1a49cd1c34111",
-          "password": "15f44e488728877494cd0eaa675c50608e371b21b7f753b91a160ebf0aced31188c4043c96e345a13677e73c0a1bf3029e6982136feafad5cf73ea3b880ed568"
+          "password": "15f44e488728877494cd0eaa675c50608e371b21b7f753b91a160ebf0aced31188c4043c96e345a13677e73c0a1bf3029e6982136feafad5cf73ea3b880ed568",
+          "avatar": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjggMTI4Ij48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImciIHgxPSIwIiB5MT0iMCIgeDI9IjEiIHkyPSIxIj48c3RvcCBzdG9wLWNvbG9yPSJoc2woMjQ5IDY2JSA2MSUpIi8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSJoc2woMjkxIDU4JSA0MyUpIi8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHJlY3Qgd2lkdGg9IjEyOCIgaGVpZ2h0PSIxMjgiIHJ4PSI2NCIgZmlsbD0idXJsKCNnKSIvPjxjaXJjbGUgY3g9IjEwMCIgY3k9IjI4IiByPSIxOCIgZmlsbD0iI2ZmZiIgb3BhY2l0eT0iLjE2Ii8+PHRleHQgeD0iNjQiIHk9IjgyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPSI1OCIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iI2ZmZiI+5pWPPC90ZXh0Pjwvc3ZnPg==",
+          "avatarMode": "default"
+        },
+        {
+          "id": "595f36b6-a855-4079-982a-462c3e5136d1",
+          "name": "英国短毛猫",
+          "account": "123456",
+          "salt": "4bee59048f43391d9c82992c19c79541",
+          "password": "8bf58119b8ceabf41a25dee39ba4c6b216a01e6050bcb488c1b840c33cab58e2e62fdd4e55adc29ab0993532affa7857e89323d2ac04c0d0f9adc9df2034c9fa",
+          "avatar": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjggMTI4Ij48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImciIHgxPSIwIiB5MT0iMCIgeDI9IjEiIHkyPSIxIj48c3RvcCBzdG9wLWNvbG9yPSJoc2woMTY4IDY2JSA2MSUpIi8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSJoc2woMjEwIDU4JSA0MyUpIi8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHJlY3Qgd2lkdGg9IjEyOCIgaGVpZ2h0PSIxMjgiIHJ4PSI2NCIgZmlsbD0idXJsKCNnKSIvPjxjaXJjbGUgY3g9IjEwMCIgY3k9IjI4IiByPSIxOCIgZmlsbD0iI2ZmZiIgb3BhY2l0eT0iLjE2Ii8+PHRleHQgeD0iNjQiIHk9IjgyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPSI1OCIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iI2ZmZiI+54yrPC90ZXh0Pjwvc3ZnPg==",
+          "avatarMode": "default"
+        },
+        {
+          "id": "ad02e00d-9c52-43d3-bbf4-2499b0cb99e5",
+          "name": "xyl",
+          "account": "xyl123",
+          "salt": "ecf1b02230f74acf593f7d9ff85fbebe",
+          "password": "3facb5008b285bd2379565f4bac62e0f0a3631babf9756c3798679207cd3633518c6a029c61842c382caeec64373f7f368d6cec02ff8369dc7720dffb0775776",
+          "avatar": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjggMTI4Ij48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImciIHgxPSIwIiB5MT0iMCIgeDI9IjEiIHkyPSIxIj48c3RvcCBzdG9wLWNvbG9yPSJoc2woNDAgNjYlIDYxJSkiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9ImhzbCg4MiA1OCUgNDMlKSIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMjgiIGhlaWdodD0iMTI4IiByeD0iNjQiIGZpbGw9InVybCgjZykiLz48Y2lyY2xlIGN4PSIxMDAiIGN5PSIyOCIgcj0iMTgiIGZpbGw9IiNmZmYiIG9wYWNpdHk9Ii4xNiIvPjx0ZXh0IHg9IjY0IiB5PSI4MiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iNTgiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiNmZmYiPmw8L3RleHQ+PC9zdmc+",
+          "avatarMode": "default"
+        },
+        {
+          "id": "8a480449-f883-4e79-bd4d-2bfcc28c8469",
+          "name": "yan",
+          "account": "yann",
+          "salt": "e2fe8011f6a1423f8a933d1a9428c9e1",
+          "password": "0dcbc65b78e7f0d064b10865eb7c4c7751e36d4b50efdc9794be2a10956a92e4de38590ad892240aed1c24da1dd76484ce77b439e44a7406ab0eae08dae2fa44",
+          "avatar": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjggMTI4Ij48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImciIHgxPSIwIiB5MT0iMCIgeDI9IjEiIHkyPSIxIj48c3RvcCBzdG9wLWNvbG9yPSJoc2woMTQ5IDY2JSA2MSUpIi8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSJoc2woMTkxIDU4JSA0MyUpIi8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHJlY3Qgd2lkdGg9IjEyOCIgaGVpZ2h0PSIxMjgiIHJ4PSI2NCIgZmlsbD0idXJsKCNnKSIvPjxjaXJjbGUgY3g9IjEwMCIgY3k9IjI4IiByPSIxOCIgZmlsbD0iI2ZmZiIgb3BhY2l0eT0iLjE2Ii8+PHRleHQgeD0iNjQiIHk9IjgyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPSI1OCIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iI2ZmZiI+bjwvdGV4dD48L3N2Zz4=",
+          "avatarMode": "default"
         }
       ],
       "files": [
+        {
+          "id": "0bb58204-35e4-41cc-86c5-0ef3d56b083c",
+          "meetingId": "m-demo-report",
+          "name": "11111.docx",
+          "size": 10905,
+          "uploadedBy": "张伟",
+          "uploaderId": "u-1",
+          "uploadedAt": "2026-11-04T09:03:21.867Z",
+          "ext": ".docx",
+          "storage": "0bb58204-35e4-41cc-86c5-0ef3d56b083c.docx",
+          "analyses": [
+            {
+              "id": "4320213a-2db3-4695-9f3c-02a2332bb0a1",
+              "version": 1,
+              "status": "已完成",
+              "progress": 100,
+              "provider": "阿里云百炼",
+              "model": "qwen3.8-flash",
+              "createdBy": "张伟",
+              "createdById": "u-1",
+              "createdAt": "2026-11-04T09:04:11.024Z",
+              "consentAt": "2026-11-04T09:04:11.024Z",
+              "stage": "正在分析资料",
+              "updatedAt": "2026-11-04T09:04:30.209Z",
+              "result": "这是一份基于提供的 PDF 内容生成的 AI 分析草稿。\n\n### 1. 内容概览\n该文档是一份关于软件系统（涉及会议管理、工作日志、分工等功能模块）的用户反馈或问题清单。列表共包含 7 个主要条目（其中第 6 点重复出现），涵盖了输入限制、界面逻辑疑问、功能缺失以及交互体验建议。\n\n### 2. 关键信息\n*   **中文输入问题**：在“会议/工作日志查询”、“会议纪要撰写”以及“主持人编辑会议纪要”时，均存在无法进行中文输入的障碍。\n*   **筛选与标签疑问**：用户质疑为何存在两个年月日筛选条件；询问个人标签的作用及符合标签的会议定义。\n*   **数据关联显示异常**：部分工作日志能关联会议，而部分没有显示关联。\n*   **跳转逻辑优化建议**：目前从“工作分配”页面点击“查看工作日志”会跳转到日志大页面，用户建议支持直接跳转到具体的对应日志。\n*   **导出功能缺失**：目前的日志和会议纪要无法实现 Word 或 PDF 格式的导出。\n*   **权限/状态确认**：提到“目前成员也可以进行分工”。\n\n### 3. 可确认的时间/数字/结论\n*   **条目数量**：文本中列出了编号 1 至 7 的问题，但编号 **6** 出现了两次（一次是关于跳转逻辑，一次是关于导出格式）。\n*   **已解决事项**：在第 3 点末尾明确标注了 **“已解决”** 字样（针对“什么才算符合标签的会议”这一具体子问题）。\n*   **文件格式提及**：明确提到了 **Word** 和 **PDF** 两种导出格式需求。\n\n### 4. 需要人工核实的问题\n*   **第 3 点的状态范围**：“已解决”是仅指代后半句“什么才算符合标签的会议”，还是整个第 3 点（包括“个人标签添加了有什么用”）都已解决？需结合上下文或开发记录确认。\n*   **第 6 点的重复编号**：文档中存在两个第 6 点，需确认这是笔误还是原本就有两个独立问题被错误标记。\n*   **“模糊查询”的需求性质**：第 1 点括号内的“能实现模糊查询吗”是一个新的功能请求，还是对当前无法中文输入导致无法搜索的替代方案询问？\n*   **“目前成员也可以进行分工”的含义**：第 4 点陈述较为简短，需确认这是一个 Bug 报告（即不应该允许成员分工）还是一个功能确认（即现在可以分工了）。",
+              "completedAt": "2026-11-04T09:04:30.209Z"
+            }
+          ]
+        },
+        {
+          "id": "05ef89dc-b60e-4e1a-ac22-88c0ed93bf40",
+          "kind": "会议录音",
+          "meetingId": "m-demo-service",
+          "name": "OSR_cn_000_0072_8k.wav",
+          "size": 319526,
+          "ext": ".wav",
+          "storage": "05ef89dc-b60e-4e1a-ac22-88c0ed93bf40.wav",
+          "durationSeconds": 20,
+          "uploadedAt": "2026-11-04T08:22:23.920Z",
+          "uploadedBy": "张伟",
+          "uploaderId": "u-1",
+          "consent": {
+            "confirmed": true,
+            "confirmedBy": "张伟",
+            "confirmedById": "u-1",
+            "confirmedAt": "2026-11-04T08:22:23.920Z"
+          },
+          "transcriptions": [
+            {
+              "id": "eb639bc2-68d4-41fb-8966-523fc993cefe",
+              "version": 1,
+              "status": "已完成",
+              "provider": "阿里云百炼",
+              "model": "paraformer-v2",
+              "language": "zh",
+              "createdAt": "2026-11-04T08:22:27.442Z",
+              "createdBy": "张伟",
+              "createdById": "u-1",
+              "consentAt": "2026-11-04T08:22:23.920Z",
+              "rawText": "院子门口不远处就是一个地铁站，这是一个美丽而神奇的景象，树上长满了又大又甜的桃子，海豚和金鱼的表演是很好看的节目。邮局门前的人行道上有一个蓝色的邮箱。",
+              "editedText": "院子门口不远处就是一个地铁站，这是一个美丽而神奇的景象，树上长满了又大又甜的桃子，海豚和金鱼的表演是很好看的节目。邮局门前的人行道上有一个蓝色的邮箱。",
+              "editVersion": 1,
+              "ossKey": "meeting-audio/p-1/m-demo-service/05ef89dc-b60e-4e1a-ac22-88c0ed93bf40-9edb6aaa-f5ff-43ec-b444-398146fa83c0.wav",
+              "ossDeleted": true,
+              "remoteId": "d559b1ce-e650-41dc-8e15-a109f5cc55b9",
+              "submittedAt": "2026-11-04T08:22:28.648Z",
+              "audioDuration": 19.967,
+              "completedAt": "2026-11-04T08:22:33.554Z",
+              "appended": false,
+              "segments": [
+                {
+                  "text": "院子门口不远处就是一个地铁站，这是一个美丽而神奇的景象，树上长满了又大又甜的桃子，海豚和金鱼的表演是很好看的节目。",
+                  "start": 610,
+                  "end": 14620
+                },
+                {
+                  "text": "邮局门前的人行道上有一个蓝色的邮箱。",
+                  "start": 15660,
+                  "end": 19430
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "9db04c2f-7d00-498f-840c-06c3ea6bf5f6",
+          "meetingId": "m-demo-service",
+          "name": "_cgi-bin_mmwebwx-bin_webwxgetmsgimg__&MsgID=2827354823235922391&skey=@crypt_28243626_9e35c546b725f7c0a5b8acfdbb5b3af6&mmweb_appid=wx_webfilehelper.jpg",
+          "size": 796498,
+          "uploadedBy": "张伟",
+          "uploaderId": "u-1",
+          "uploadedAt": "2026-11-04T07:23:10.149Z",
+          "ext": ".jpg",
+          "storage": "9db04c2f-7d00-498f-840c-06c3ea6bf5f6.jpg",
+          "analyses": [
+            {
+              "id": "e0708161-5a6e-4a7b-b8c7-cf361b854f37",
+              "version": 1,
+              "status": "已完成",
+              "progress": 100,
+              "provider": "阿里云百炼",
+              "model": "qwen3.8-flash",
+              "createdBy": "张伟",
+              "createdById": "u-1",
+              "createdAt": "2026-11-04T09:17:43.721Z",
+              "consentAt": "2026-11-04T09:17:43.721Z",
+              "stage": "正在分析资料",
+              "updatedAt": "2026-11-04T09:18:07.350Z",
+              "result": "**AI 分析草稿**\n\n### 内容概览\n该文件是一张手机屏幕截图的 PDF 转换版，显示的是视频平台（界面特征符合 Bilibili）上的一个视频播放页面。\n*   **视频标题**：【魏巍】谁是最可爱的人\n*   **当前状态**：处于“重播”或暂停/加载界面，下方展示了热门评论区。\n*   **主要信息源**：包含两条高赞的用户评论，分别引用了诗歌和遗言，表达对魏巍同志的纪念。\n\n### 关键信息\n1.  **视频元数据**：\n    *   UP主 ID：bili_98413139431\n    *   视频时长：07:14\n    *   播放量：2.4万\n    *   弹幕数：26\n    *   推荐广告：“为什么不在郑州认识一下呢~”（3.5万播放）\n\n2.  **热门评论 1**：\n    *   **用户**：二机部第三局 (LV6)\n    *   **内容**：引用了一首名为《不要在我的墓碑前哭泣》的诗（注：此诗原作为玛丽·伊丽莎白·弗莱创作的《Do not stand at my grave and weep》，此处被改编为红色革命题材版本）。\n    *   **诗句摘录**：“我是凛冽的赤潮...我是无声的春雨...我是赤色的黎明...我是燎原的星火...我是震耳的钟声...我是闪耀的群星...我是永不褪色的红旗...”\n    *   **互动数据**：点赞 2036，回复 14条。\n    *   **时间**：2022年4月29日。\n\n3.  **热门评论 2**：\n    *   **用户**：孟明朵 (LV6)\n    *   **内容**：提及魏巍同志的遗言“继续geming，永不投降”，并与各位同志共勉。（注：“geming”为拼音代指“革命”）。\n\n4.  **其他界面元素**：\n    *   顶部状态栏时间：13:12\n    *   底部输入框提示语：“万水千山总是情，评论两句行不行”\n\n### 可确认的时间/数字/结论\n*   **时间点**：截图时手机系统时间为 13:12；第一条评论发布于 2022年4月29日。\n*   **数字统计**：\n    *   视频播放量：2.4万\n    *   视频弹幕数：26\n    *   视频总时长：7分14秒\n    *   第一条评论点赞数：2036\n    *   第一条评论回复数：14\n    *   广告播放量：3.5万\n*   **文本事实**：截图中明确显示了关于魏巍的视频标题及两则具体的评论内容。\n\n### 需要人工核实的问题\n1.  **视频真实性与来源**：需核实该视频是否为官方媒体发布或个人UP主制作，以及其具体内容是否准确反映了魏巍生平（仅凭截图无法得知视频内部画面）。\n2.  **诗歌出处**：评论中引用的《不要在我的墓碑前哭泣》并非魏巍原作，而是网络流传的改编诗词，需确认这种引用在特定语境下的合规性或背景含义。\n3.  **“geming”一词**：评论中使用拼音代替汉字，通常是为了规避平台关键词审查，需结合当时互联网环境理解其具体指向。\n4.  **账号身份**：“二机部第三局”这一用户名具有强烈的历史政治色彩（二机部即第二机械工业部，负责核工业），需核实该用户是否为真实机构账号、纪念性ID还是普通网民借用名义。",
+              "completedAt": "2026-11-04T09:18:07.350Z"
+            }
+          ]
+        },
+        {
+          "id": "643bff99-3d12-4082-bfdb-2f5089df176f",
+          "meetingId": "m-demo-service",
+          "name": "11111.docx",
+          "size": 10905,
+          "uploadedBy": "张伟",
+          "uploaderId": "u-1",
+          "uploadedAt": "2026-11-04T07:23:04.809Z",
+          "ext": ".docx",
+          "storage": "643bff99-3d12-4082-bfdb-2f5089df176f.docx"
+        },
+        {
+          "id": "4f631f87-74a2-4867-a303-6282bfe4db01",
+          "kind": "会议录音",
+          "meetingId": "m-demo-planning",
+          "name": "OSR_cn_000_0072_8k.wav",
+          "size": 319526,
+          "ext": ".wav",
+          "storage": "4f631f87-74a2-4867-a303-6282bfe4db01.wav",
+          "durationSeconds": 20,
+          "uploadedAt": "2026-11-04T06:57:12.267Z",
+          "uploadedBy": "张伟",
+          "uploaderId": "u-1",
+          "consent": {
+            "confirmed": true,
+            "confirmedBy": "张伟",
+            "confirmedById": "u-1",
+            "confirmedAt": "2026-11-04T06:57:12.267Z"
+          },
+          "transcriptions": [
+            {
+              "id": "17d0f533-9e96-4875-8c7e-a8db3547f372",
+              "version": 1,
+              "status": "已完成",
+              "provider": "阿里云百炼",
+              "model": "paraformer-v2",
+              "language": "zh",
+              "createdAt": "2026-11-04T06:57:24.194Z",
+              "createdBy": "张伟",
+              "createdById": "u-1",
+              "consentAt": "2026-11-04T06:57:12.267Z",
+              "rawText": "院子门口不远处就是一个地铁站，这是一个美丽而神奇的景象，树上长满了又大又甜的桃子，海豚和金鱼的表演是很好看的节目。邮局门前的人行道上有一个蓝色的邮箱。",
+              "editedText": "院子门口不远处就是一个地铁站，这是一个美丽而神奇的景象，树上长满了又大又甜的桃子，海豚和金鱼的表演是很好看的节目。邮局门前的人行道上有一个蓝色的邮箱。",
+              "editVersion": 1,
+              "ossKey": "meeting-audio/p-1/m-demo-planning/4f631f87-74a2-4867-a303-6282bfe4db01-5e461289-4dc0-434e-b251-6fe238441d21.wav",
+              "ossDeleted": true,
+              "remoteId": "4637a82d-c16e-49aa-8571-a0a419112e9b",
+              "submittedAt": "2026-11-04T06:57:24.874Z",
+              "audioDuration": 19.967,
+              "completedAt": "2026-11-04T06:57:29.309Z",
+              "appended": false,
+              "segments": [
+                {
+                  "text": "院子门口不远处就是一个地铁站，这是一个美丽而神奇的景象，树上长满了又大又甜的桃子，海豚和金鱼的表演是很好看的节目。",
+                  "start": 610,
+                  "end": 14620
+                },
+                {
+                  "text": "邮局门前的人行道上有一个蓝色的邮箱。",
+                  "start": 15660,
+                  "end": 19430
+                }
+              ],
+              "analyses": [
+                {
+                  "id": "49581982-9a48-4fe0-8c7f-67679a4a358a",
+                  "version": 1,
+                  "status": "已完成",
+                  "progress": 100,
+                  "totalChunks": 1,
+                  "provider": "阿里云百炼",
+                  "model": "deepseek-v4.1-flash-1017",
+                  "createdBy": "张伟",
+                  "createdById": "u-1",
+                  "createdAt": "2026-11-04T06:59:32.813Z",
+                  "consentAt": "2026-11-04T06:59:32.813Z",
+                  "sourceEditVersion": 1,
+                  "transcriptLabel": "转写第1版",
+                  "completedChunks": 1,
+                  "updatedAt": "2026-11-04T06:59:41.161Z",
+                  "stage": "综合整理",
+                  "result": "# 会议分析草稿（AI生成，非正式纪要）\n\n**说明：本文件为AI根据录音分段分析笔记整理的草稿，仅供人工复核使用，不构成正式会议纪要。**\n\n## 会议主题\n阶段建议结构讨论（依据会议标题；录音片段内容未体现与该主题的明确关联，待确认）。\n\n## 讨论要点\n- 第1段：讨论主题未明确。片段内容与“阶段建议结构讨论”无明确关联，仅含描述性语句（地铁站、桃树、海豚和金鱼表演、蓝色邮箱），未出现会议讨论内容。\n\n## 已明确结论\n- 材料中未识别到任何明确结论。\n\n## 后续跟进\n- 材料中未识别到后续事项；负责人、计划时间均未明确。\n\n## 未决问题\n- 会议实际讨论主题待确认（片段内容与会议标题无明确关联）。\n- 第1段片段是否属于本次会议、是否为有效讨论内容，待确认。\n\n## 待确认事项汇总\n- 会议主题与录音内容的关联性：待确认。\n- 是否存在其他有效讨论片段：材料仅提供第1段，待确认。",
+                  "completedAt": "2026-11-04T06:59:41.161Z"
+                }
+              ]
+            }
+          ]
+        },
         {
           "id": "9cb96293-34c0-4dcf-bf66-87787d64c314",
           "meetingId": "m-1",
@@ -1455,12 +1944,73 @@
           "code": "16AC23596E",
           "createdAt": "2026-11-03T05:23:00.419Z",
           "createdBy": "u-4",
-          "expiresAt": "2026-11-10T05:23:00.419Z",
+          "expiresAt": null,
           "status": "有效"
+        }
+      ],
+      "files": []
+    },
+    {
+      "project": {
+        "id": "66a8ab82-ce8b-4bc8-ab7b-e05ced3656eb",
+        "name": "111",
+        "topic": "122",
+        "status": "进行中",
+        "startDate": "2026-11-03",
+        "endDate": "2026-11-22",
+        "archivedAt": null
+      },
+      "people": [
+        {
+          "id": "u-1",
+          "name": "张伟",
+          "role": "组长",
+          "joined": "2026-11-03"
+        }
+      ],
+      "meetings": [],
+      "assignments": [],
+      "logs": [],
+      "events": [
+        {
+          "id": "f78626ad-299c-487a-b7a8-c7844be75d8b",
+          "kind": "项目",
+          "title": "创建了项目",
+          "detail": "张伟",
+          "date": "2026-11-03"
+        }
+      ],
+      "invites": [
+        {
+          "id": "401a282f-ccba-4755-91f5-4d6fb244090f",
+          "code": "09EAF9AF7B",
+          "createdAt": "2026-11-03T08:12:44.365Z",
+          "createdBy": "u-1",
+          "expiresAt": null,
+          "status": "有效"
+        },
+        {
+          "id": "6015baa2-d3d6-4e80-bb63-e12d854b1e2e",
+          "code": "2ADFA7977F",
+          "createdAt": "2026-11-03T08:12:34.642Z",
+          "createdBy": "u-1",
+          "expiresAt": "2026-11-10T08:12:34.642Z",
+          "status": "已失效"
         }
       ],
       "files": []
     }
   ],
-  "sessions": []
+  "sessions": [
+    {
+      "hash": "51374d4efcec181c8828973f04af48db399d90852ec16ec6fe08453e401e2a28",
+      "userId": "u-1",
+      "expiresAt": 1793869386285
+    }
+  ],
+  "todos": [],
+  "notifications": [],
+  "personalTags": [],
+  "meetingTags": [],
+  "meetingReminderPrefs": []
 }

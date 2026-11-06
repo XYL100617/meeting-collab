@@ -231,3 +231,194 @@ body{background:#f4f6fa;color:#18243a}.sidebar{height:100dvh;min-height:0;overfl
 
 /* Keep long attachment names and inline progress from squeezing meeting rows */
 .meeting-detail-grid{grid-template-columns:minmax(0,1fr) minmax(0,1fr);min-width:0}.meeting-detail-grid>*{min-width:0}.detail-section{min-width:0;max-width:100%}.attendee-row{min-width:0;max-width:100%;flex-wrap:wrap;overflow-wrap:anywhere}.attendee-row>*{min-width:0;max-width:100%}.attendee-row>.analysis-progress-inline{flex:1 0 100%;width:100%;min-width:0;margin:5px 0 0}.attendee-row>a,.attendee-row>button{overflow-wrap:anywhere}
+
+/* 工作分配：固定成员筛选与计划日期侧栏 */
+.work-grid{grid-template-columns:minmax(0,1fr) minmax(255px,.42fr);gap:14px;align-items:start}
+.member-work-panel{position:sticky;top:78px;align-self:start;max-height:calc(100vh - 94px);overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:#cbd2e2 transparent}
+.member-work-panel .panel-header{padding:14px 15px 9px}
+.member-panel-count{font-size:9px}
+.member-work-list{padding:0 12px 5px}
+.member-work-row{min-height:42px;gap:8px;padding:6px 5px}
+.member-work-row .avatar{width:27px;height:27px;font-size:10px}
+.member-all-avatar{width:27px;height:27px;display:grid;place-items:center;flex:none;margin-left:0;border-radius:50%;background:#e9edff;color:#4058bb;font-size:10px;font-weight:700}
+.assignment-date-panel,.upcoming-plan-panel{margin:4px 12px 13px;padding:12px;border:1px solid #edf0f6;border-radius:10px;background:#fbfcff}
+.assignment-widget-heading{display:grid;gap:4px}
+.assignment-widget-heading b{font-size:10px;color:#35445f}
+.assignment-widget-heading small{font-size:8px;line-height:1.45;color:#8994a7}
+.assignment-date-chart{height:84px;display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px;align-items:end;margin-top:10px}
+.assignment-date-column{height:100%;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:3px}
+.assignment-date-column>span{font-size:8px;line-height:1;color:#78859c}
+.assignment-date-column>i{display:block;width:min(15px,72%);height:var(--bar-height);min-height:3px;border-radius:4px 4px 2px 2px;background:linear-gradient(180deg,#4968d5,#8ca0ec)}
+.assignment-date-column:nth-child(even)>i{background:#91b89b}
+.assignment-date-column>small{font-size:7px;color:#929db0}
+.assignment-chart-legend{display:flex;align-items:center;gap:5px;margin-top:8px}
+.assignment-chart-legend>i{width:6px;height:6px;border-radius:50%;background:#4968d5}
+.assignment-chart-legend span,.assignment-chart-legend small{font-size:8px;color:#8c97aa}
+.assignment-chart-legend small{margin-left:auto}
+.upcoming-plan-list{display:grid;margin-top:7px}
+.upcoming-plan-row{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;padding:8px 0;border:0;border-top:1px solid #edf0f6;background:transparent;text-align:left;cursor:pointer}
+.upcoming-plan-row:hover .upcoming-plan-copy b{color:#3452b7}
+.upcoming-plan-copy{display:grid;gap:4px;min-width:0}
+.upcoming-plan-copy b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:8px;font-weight:600;color:#485570}
+.upcoming-plan-copy small{font-size:8px;color:#929db0}
+.upcoming-plan-row .due-badge{flex:none;padding:3px 5px;font-size:7px}
+.upcoming-plan-empty{padding:8px 0 2px;font-size:8px;line-height:1.5;color:#929db0}
+.work-summary-context{font-size:9px;color:#8995aa}
+@media(max-width:1050px){.work-grid{grid-template-columns:minmax(0,1fr) minmax(230px,.48fr)}}
+@media(max-width:760px){.work-grid{grid-template-columns:1fr}.member-work-panel{position:static;order:-1;max-height:none;overflow:visible}.member-work-list{display:grid;grid-template-columns:1fr 1fr;gap:3px}.member-work-row{min-height:38px;border:1px solid #edf0f5;border-radius:8px}.member-work-panel .panel-header{padding-bottom:9px}.assignment-date-panel,.upcoming-plan-panel{margin-left:12px;margin-right:12px}.work-summary{align-items:flex-start;flex-direction:row}.work-summary-context{margin-left:auto;white-space:nowrap}}
+@media(max-width:420px){.member-work-list{grid-template-columns:1fr}.work-summary-context{font-size:8px}}
+/* 会议页：本周日程带 */
+.meeting-week-panel{display:grid;grid-template-columns:190px minmax(0,1fr);gap:18px;align-items:center;margin:4px 0 13px;padding:14px 18px;border:1px solid #e3e8f2;border-radius:13px;background:#fff}
+.meeting-week-heading{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.meeting-week-heading>div:first-child{display:grid;gap:5px}
+.meeting-week-heading>div:first-child b{font-size:11px;color:#34435f}
+.meeting-week-heading>div:first-child small{font-size:8px;color:#929db0}
+.meeting-week-total{display:grid;grid-template-columns:auto auto;align-items:baseline;gap:0 5px;padding-left:10px;border-left:1px solid #edf0f5}
+.meeting-week-total b{grid-row:span 2;color:#2c438f;font-size:19px}
+.meeting-week-total span,.meeting-week-total small{font-size:8px;color:#8995aa}
+.meeting-week-total small{grid-column:1/-1;white-space:nowrap}
+.meeting-week-days{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
+.meeting-week-day{display:grid;justify-items:center;gap:4px;min-width:0;padding:7px 4px;border:1px solid transparent;border-radius:9px;background:#fbfcff;color:#8190a9;cursor:pointer;transition:background .15s,border-color .15s,color .15s}
+.meeting-week-day:hover{border-color:#dbe2fa;background:#f5f7ff}
+.meeting-week-day>span{font-size:8px}
+.meeting-week-day>b{font-size:13px;color:#33466f}
+.meeting-week-day>small{min-height:10px;font-size:7px;color:#a0a9b8}
+.meeting-week-day.active{border-color:#dce4ff;background:#edf1ff;color:#4261cc}
+.meeting-week-day.active>b{color:#3457cf}
+.meeting-week-day.active>small{color:#6178cd}
+.meeting-week-day.today:not(.active)>b{color:#3457cf}
+/* 工作分配页：成员概览卡片与列表工具栏 */
+.work-main-column{display:grid;gap:10px;min-width:0}
+.member-work-overview{display:grid;grid-template-columns:repeat(auto-fit,minmax(96px,1fr));gap:7px;min-width:0}
+.member-work-summary-card{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:6px 8px;min-width:0;padding:9px;border:1px solid #e5e9f2;border-radius:10px;background:#fff;text-align:left;color:#34435f;cursor:pointer;transition:border-color .15s,background .15s,transform .15s}
+.member-work-summary-card:hover{transform:translateY(-1px);border-color:#cbd5f5}
+.member-work-summary-card.selected{border-color:#8396e6;background:#f7f8ff}
+.member-summary-avatar .avatar{width:27px;height:27px;font-size:10px}
+.member-summary-copy{display:grid;gap:3px;min-width:0}
+.member-summary-copy b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:9px;color:#34435f}
+.member-summary-copy small{font-size:8px;color:#8d98ac;white-space:nowrap}
+.member-summary-track{grid-column:1/-1;height:4px;overflow:hidden;border-radius:4px;background:#e9edf4}
+.member-summary-track i{display:block;height:100%;border-radius:inherit;background:#4968d5}
+.member-work-summary-card:nth-child(even) .member-summary-track i{background:#83ad8c}
+.work-list-toolbar{display:flex;align-items:center;gap:10px;min-width:0;padding:2px 1px}
+.work-search-wrap{display:flex;align-items:center;gap:7px;flex:1;min-width:0;height:34px;padding:0 10px;border:1px solid #e3e8f1;border-radius:8px;background:#fff;color:#8591a8}
+.work-search-wrap>span{font-size:17px;line-height:1}
+.work-search-wrap .search-input{width:100%;min-width:0;height:30px;padding:0;border:0;background:transparent;box-shadow:none}
+.work-result-count{flex:none;color:#8c97aa;font-size:9px}
+/* 工作日志页：真实日志数量趋势 */
+.journal-summary{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(240px,.8fr);gap:14px 18px;align-items:center}
+.journal-summary>.journal-summary-stats{display:flex;align-items:stretch;min-width:0;padding:0;border:0}
+.journal-summary-stats>div{display:grid;grid-template-columns:auto auto;align-items:baseline;gap:2px 8px;min-width:105px;padding:2px 14px;border-right:1px solid #edf0f5}
+.journal-summary-stats>div:first-child{padding-left:0}
+.journal-summary-stats>div:last-child{border-right:0}
+.journal-summary-stats>div span{color:#8390a5;font-size:9px}
+.journal-summary-stats>div b{grid-column:2;grid-row:1/3;color:#2c3e70;font-size:21px}
+.journal-summary-stats>div small{grid-column:1/-1;color:#a1aabc;font-size:9px}
+.journal-trend-panel{min-width:0;padding:9px 12px 7px;border:1px solid #edf0f5;border-radius:10px;background:#fbfcff}
+.journal-trend-heading{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.journal-trend-heading>div{display:grid;gap:3px}
+.journal-trend-heading b{font-size:9px;color:#35445f}
+.journal-trend-heading small{font-size:8px;color:#8e99ad}
+.journal-trend-dot{width:7px;height:7px;flex:none;border-radius:50%;background:#4968d5;box-shadow:0 0 0 3px #e9edff}
+.journal-trend-chart{display:block;width:100%;height:42px;margin-top:4px;overflow:visible}
+.journal-trend-chart polyline{stroke:#4165d8}
+.journal-trend-chart circle{fill:#4165d8}
+.journal-trend-labels{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:2px;text-align:center}
+.journal-trend-labels small{font-size:7px;color:#9aa4b5}
+.journal-summary>p{grid-column:1/-1;max-width:none;padding:7px 0 0;border-top:1px solid #edf0f5;font-size:8px}
+@media(max-width:1050px){.meeting-week-panel{grid-template-columns:150px minmax(0,1fr);gap:12px}.member-work-overview{grid-template-columns:repeat(3,minmax(0,1fr))}.journal-summary{grid-template-columns:minmax(0,1fr) minmax(220px,.8fr)}.journal-summary-stats>div{min-width:90px;padding:2px 9px}}
+@media(max-width:760px){.meeting-week-panel{grid-template-columns:1fr;gap:9px;padding:12px}.meeting-week-heading{align-items:center}.meeting-week-days{gap:3px}.meeting-week-day{padding:6px 2px}.meeting-week-total{margin-left:auto}.member-work-overview{grid-template-columns:repeat(2,minmax(0,1fr))}.work-list-toolbar{align-items:flex-start;flex-direction:column}.work-search-wrap,.work-result-count{width:100%}.journal-summary{grid-template-columns:1fr;gap:10px}.journal-summary-stats>div{flex:1;min-width:0;padding:2px 8px}.journal-summary-stats>div:first-child{padding-left:0}.journal-trend-panel{width:100%}.journal-summary>p{grid-column:auto}}
+@media(max-width:420px){.member-work-overview{grid-template-columns:1fr 1fr}.journal-summary-stats>div{grid-template-columns:auto auto;gap:2px 4px}.journal-summary-stats>div b{font-size:18px}}
+/* 三个主页面的阅读字号与日志趋势卡布局 */
+body{font-size:15px}
+.page-heading h1{font-size:28px;line-height:1.3}
+.page-heading p{font-size:14px;line-height:1.75}
+.eyebrow{font-size:11px}
+.breadcrumbs{font-size:12px}
+.side-label{font-size:11px}
+.nav-item{font-size:13px}
+.people-label,.person-chip{font-size:12px}
+.meeting-tag-filters>span{font-size:13px}
+.tag-filter-chip{font-size:11px}
+.meeting-week-heading>div:first-child b{font-size:13px}
+.meeting-week-heading>div:first-child small{font-size:10px}
+.meeting-week-total b{font-size:21px}
+.meeting-week-total span,.meeting-week-total small{font-size:9px}
+.meeting-week-day>span{font-size:10px}
+.meeting-week-day>b{font-size:16px}
+.meeting-week-day>small{font-size:9px}
+.meeting-next h2{font-size:20px}
+.meeting-next p{font-size:13px}
+.meeting-summary-grid article span{font-size:12px}
+.meeting-summary-grid article b{font-size:25px}
+.meeting-summary-grid article small{font-size:11px}
+.meeting-filters .filter-select,.meeting-filters .search-input,.meeting-date-filter,.meeting-only-mine{font-size:12px}
+.meeting-table-head{font-size:11px}
+.meeting-table-row{font-size:12px}
+.meeting-table-row .table-sub{font-size:10px}
+.meeting-attendee-chip{font-size:10px}
+.work-summary span,.work-summary small{font-size:11px}
+.work-summary b{font-size:14px}
+.member-summary-copy b{font-size:11px}
+.member-summary-copy small{font-size:10px}
+.work-search-wrap .search-input{font-size:12px}
+.work-result-count{font-size:10px}
+.work-main b{font-size:14px}
+.work-main p,.work-note{font-size:11px}
+.work-meta{font-size:11px}
+.due-badge{font-size:10px}
+.work-card-actions .text-link{font-size:11px}
+.member-work-panel .panel-title{font-size:13px}
+.member-work-panel .panel-header small{font-size:10px}
+.member-work-row b{font-size:12px}
+.member-work-row>span:not(.avatar){font-size:11px}
+.assignment-widget-heading b{font-size:12px}
+.assignment-widget-heading small{font-size:10px}
+.assignment-date-column>span,.assignment-date-column>small{font-size:9px}
+.assignment-chart-legend span,.assignment-chart-legend small{font-size:9px}
+.upcoming-plan-copy b{font-size:10px}
+.upcoming-plan-copy small,.upcoming-plan-empty{font-size:9px}
+.upcoming-plan-row .due-badge{font-size:8px}
+.journal-summary>.journal-trend-panel{display:block;grid-template-columns:none;align-self:stretch}
+.journal-summary>.journal-trend-panel b{font-size:12px;color:#35445f}
+.journal-summary>.journal-trend-panel small{grid-column:auto;font-size:10px;color:#8e99ad}
+.journal-summary>.journal-trend-panel span{font-size:9px}
+.journal-summary-stats>div span{font-size:11px}
+.journal-summary-stats>div b{font-size:24px}
+.journal-summary-stats>div small{font-size:10px}
+.journal-trend-heading{display:flex;align-items:center;justify-content:space-between}
+.journal-trend-heading>div{display:grid;gap:4px}
+.journal-trend-heading>div b{font-size:12px}
+.journal-trend-heading>div small{font-size:10px}
+.journal-trend-labels small{font-size:9px}
+.journal-summary>p{font-size:10px;line-height:1.6}
+.journal-filters .filter-select,.journal-filters .search-input,.journal-filters .meeting-date-filter{font-size:12px}
+.log-header b{font-size:12px}
+.log-header span{font-size:10px}
+.log-text{font-size:13px;line-height:1.9}
+.log-link{font-size:10px}
+.log-card .text-link{font-size:10px}
+@media(max-width:760px){.page-heading h1{font-size:25px}.page-heading p{font-size:13px}.journal-summary-stats>div span{font-size:10px}.journal-summary-stats>div b{font-size:21px}.journal-summary-stats>div small{font-size:9px}.meeting-week-day>b{font-size:14px}.work-main b{font-size:13px}}
+/* 工作分配页上方区域加大 */
+.page-content:has(.work-main-column) .page-heading{margin-bottom:27px}
+.page-content:has(.work-main-column) .page-heading .eyebrow{font-size:13px;letter-spacing:.12em}
+.page-content:has(.work-main-column) .page-heading h1{font-size:34px;line-height:1.25;margin:8px 0}
+.page-content:has(.work-main-column) .page-heading p{font-size:16px;line-height:1.75}
+.work-summary{min-height:82px;padding:17px 20px;margin-bottom:17px}
+.work-summary>div{gap:5px 12px}
+.work-summary span{font-size:13px}
+.work-summary b{font-size:17px}
+.work-summary small{font-size:11px}
+.work-summary-context{font-size:12px}
+.member-work-overview{grid-template-columns:repeat(auto-fit,minmax(125px,1fr));gap:10px}
+.member-work-summary-card{min-height:76px;padding:12px;gap:7px 10px;border-radius:11px}
+.member-summary-avatar .avatar{width:34px;height:34px;font-size:13px}
+.member-summary-copy b{font-size:13px}
+.member-summary-copy small{font-size:11px}
+.member-summary-track{height:5px}
+.work-list-toolbar{gap:12px;margin:1px 0 3px}
+.work-search-wrap{height:43px;padding:0 12px}
+.work-search-wrap>span{font-size:20px}
+.work-search-wrap .search-input{height:39px;font-size:14px}
+.work-result-count{font-size:11px}
+@media(max-width:760px){.page-content:has(.work-main-column) .page-heading h1{font-size:29px}.page-content:has(.work-main-column) .page-heading p{font-size:14px}.work-summary{min-height:72px;padding:13px 14px}.member-work-summary-card{min-height:68px;padding:10px}.member-summary-avatar .avatar{width:30px;height:30px}.work-search-wrap{height:40px}.work-search-wrap .search-input{font-size:13px}}

@@ -62,10 +62,10 @@ test('项目会议范围包含未邀请本人的会议，支持仅本人筛选�
 });
 test('会议改时、改期后今日接口同步更新',async()=>{
   const original=(await api('/api/today-schedule?date='+date)).data.find(x=>x.id==='personal');
-  const payload={id:original.id,title:original.title,topic:original.topic,date,start:'07:00',end:'08:00',format:original.format,location:original.location,hostId:'u-1',attendeeIds:['u-1']};
+  const payload={id:original.id,version:1,title:original.title,topic:original.topic,date,start:'07:00',end:'08:00',format:original.format,location:original.location,hostId:'u-1',attendeeIds:['u-1']};
   assert.equal((await api('/api/meetings','PATCH',payload)).status,200);
   assert.equal((await api('/api/today-schedule?date='+date)).data[0].start,'07:00');
-  assert.equal((await api('/api/meetings','PATCH',{...payload,date:'2026-11-09'})).status,200);
+  assert.equal((await api('/api/meetings','PATCH',{...payload,version:2,date:'2026-11-09'})).status,200);
   assert.ok(!(await api('/api/today-schedule?date='+date)).data.some(x=>x.id==='personal'));
   assert.ok((await api('/api/today-schedule?date=2026-11-09')).data.some(x=>x.id==='personal'));
 });

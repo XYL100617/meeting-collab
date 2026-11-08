@@ -51,7 +51,7 @@ test('负责人调整持久化原、新负责人快照及准确事件时间',asy
 test('会议调整记录当时关系和时间，新主持不继承创建事件',async()=>{
   const original={title:'签到机制讨论',topic:'核对签到规则',date:'2026-11-09',start:'09:00',end:'10:00',format:'线下',location:'会议室',hostId:'u-2',attendeeIds:['u-2']};
   const created=await api('/api/meetings','POST',original);assert.equal(created.status,201);
-  const changed=await api('/api/meetings','PATCH',{...original,id:created.data.id,hostId:'u-3',attendeeIds:['u-3']});assert.equal(changed.status,200);
+  const changed=await api('/api/meetings','PATCH',{...original,id:created.data.id,version:created.data.scheduleVersion,hostId:'u-3',attendeeIds:['u-3']});assert.equal(changed.status,200);
   const state=(await api('/api/state')).data,creation=state.events.find(e=>e.meetingId===created.data.id&&e.action==='meeting-created'),update=state.events.find(e=>e.meetingId===created.data.id&&e.action==='meeting-updated');
   assert.ok(update?.at,'会议调整事件需要准确时间与类型');assert.equal(update.before.hostId,'u-2');assert.equal(update.after.hostId,'u-3');
   const former=(await api('/api/personal-history?personId=u-2')).data,current=(await api('/api/personal-history?personId=u-3')).data;

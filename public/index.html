@@ -4,6 +4,10 @@
   <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#f4f6fa"><meta name="description" content="同频会议与协作系统：以项目、会议和工作记录串联团队协作。">
   <title>同频会议与协作系统 · 协同</title><link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/today-agenda.css">
+  <link rel="stylesheet" href="/personal-history.css">
+  <link rel="stylesheet" href="/project-timeline.css">
+  <link rel="stylesheet" href="/project-events.css">
 </head>
 <body>
   <div class="app-shell">
@@ -20,19 +24,26 @@
         <button class="nav-item" data-view="journal"><span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M6 3.5h9l4 4v13H6a2 2 0 0 1-2-2v-13a2 2 0 0 1 2-2Z"/><path d="M14.5 3.5v5h5M8 13h8M8 16.5h8"/></svg></span>工作日志</button>
         <button class="nav-item" data-view="members"><span class="nav-icon"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M3.5 20a5.5 5.5 0 0 1 11 0M16 5.5a3 3 0 0 1 0 5.8M17 14a4.5 4.5 0 0 1 3.5 4.4"/></svg></span>项目成员</button>
         <button class="nav-item" data-view="timeline"><span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M4 18V8M9 18V5M14 18v-7M19 18V3"/><path d="M3 20.5h18"/></svg></span>项目时间线</button>
-        <button class="nav-item" data-view="personal"><span class="nav-icon"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M3 20a6 6 0 0 1 12 0M17 8h4M19 6v4"/></svg></span>个人时间线</button>
+        <button class="nav-item" data-view="personal"><span class="nav-icon"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M3 20a6 6 0 0 1 12 0M17 8h4M19 6v4"/></svg></span>个人历史回顾</button>
       </nav>
       <div class="side-label people-label">项目成员 <button id="invite-mini" data-action="invite-mini" title="邀请成员">＋</button></div>
       <div class="people-list" id="side-people"></div>
       <div class="sidebar-bottom"><div class="project-progress"><div class="progress-copy"><span>协作进展</span><b>项目进行中</b></div><div class="progress-track"><i></i></div><small>重要过程记录集中在这里</small></div><button class="nav-item settings-link" data-view="settings"><span class="nav-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-1.6 2.7-.2-.1a1.7 1.7 0 0 0-1.8.3l-.1.1h-3.2l-.1-.2a1.7 1.7 0 0 0-1.6-1h-.2l-.1.2H8l-.1-.2a1.7 1.7 0 0 0-1.6-1H6l-.1.1-1.6-2.7.1-.1a1.7 1.7 0 0 0 .3-1.9V13a1.7 1.7 0 0 0-1.2-1.2H3v-3l.2-.1a1.7 1.7 0 0 0 1.2-1.2v-.2a1.7 1.7 0 0 0-.3-1.9L4 5.3l1.6-2.7.2.1a1.7 1.7 0 0 0 1.8-.3l.1-.1h3.2l.1.2a1.7 1.7 0 0 0 1.6 1h.2l.1-.2H16l.1.2a1.7 1.7 0 0 0 1.6 1h.2l.1-.1 1.6 2.7-.1.1a1.7 1.7 0 0 0-.3 1.9v.2a1.7 1.7 0 0 0 1.2 1.2l.2.1v3l-.2.1a1.7 1.7 0 0 0-1.2 1.2Z"/></svg></span>项目设置</button><div class="profile"><div class="avatar avatar-lavender">同</div><div><b>当前用户</b><span>项目成员</span></div><button class="more-button" aria-label="退出登录">登录后显示</button></div></div>
     </aside>
     <main class="main-area">
-      <header class="topbar"><button class="mobile-menu" id="mobile-menu" aria-label="打开导航">☰</button><div class="breadcrumbs"><button data-view="projects">我的项目</button><b>/</b><strong>项目空间</strong></div><div class="top-actions"><span class="save-indicator" id="connection-status" data-status="loading"><i></i>正在连接</span><button class="icon-button" data-action="global-search" title="搜索">⌕</button><button class="icon-button notification-trigger" data-action="show-notifications" title="通知中心" aria-label="通知中心">♢<i id="notification-count" hidden></i></button><div class="user-menu-wrap"><button class="avatar avatar-lavender top-avatar" id="top-avatar" data-action="toggle-user-menu" aria-label="账户菜单" aria-expanded="false"><span id="top-avatar-label">同</span></button><div class="user-menu" id="user-menu" hidden><div class="user-menu-head"><span class="avatar avatar-lavender" id="user-menu-avatar">同</span><div><b id="user-menu-name">个人账户</b><small id="user-menu-account">登录后显示</small></div></div><button data-view="profile">个人资料与账户</button><button data-view="personal">我的项目时间线</button><button data-action="logout" hidden>退出登录</button></div></div></div></header>
+      <header class="topbar"><button class="mobile-menu" id="mobile-menu" aria-label="打开导航">☰</button><div class="breadcrumbs"><button data-view="projects">我的项目</button><b>/</b><strong>项目空间</strong></div><div class="top-actions"><span class="save-indicator" id="connection-status" data-status="loading"><i></i>正在连接</span><button class="icon-button" data-action="global-search" title="搜索">⌕</button><button class="icon-button notification-trigger" data-action="show-notifications" title="通知中心" aria-label="通知中心">♢<i id="notification-count" hidden></i></button><div class="user-menu-wrap"><button class="avatar avatar-lavender top-avatar" id="top-avatar" data-action="toggle-user-menu" aria-label="账户菜单" aria-expanded="false"><span id="top-avatar-label">同</span></button><div class="user-menu" id="user-menu" hidden><div class="user-menu-head"><span class="avatar avatar-lavender" id="user-menu-avatar">同</span><div><b id="user-menu-name">个人账户</b><small id="user-menu-account">登录后显示</small></div></div><button data-view="profile">个人资料与账户</button><button data-view="personal">我的项目历史回顾</button><button data-action="logout" hidden>退出登录</button></div></div></div></header>
       <div class="page-content" id="page-content"><div class="loading">正在打开项目空间…</div></div>
     </main>
   </div>
   <div class="toast-region" id="toast-region" aria-live="polite"></div><div class="modal-layer" id="modal-layer" hidden></div>
   <script src="/profile.js" defer></script>
+  <script src="/today-agenda.js" defer></script>
+  <script src="/personal-history-model.js" defer></script>
+  <script src="/personal-history.js" defer></script>
+  <script src="/project-events-model.js" defer></script>
+  <script src="/project-timeline-model.js" defer></script>
+  <script src="/project-timeline.js" defer></script>
+  <script src="/project-events.js" defer></script>
   <script src="/app.js" defer></script>
 </body>
 </html>

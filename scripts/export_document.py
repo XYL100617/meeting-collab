@@ -9,18 +9,33 @@ from datetime import datetime
 from io import BytesIO
 from xml.etree import ElementTree as ET
 
-payload = json.load(sys.stdin)
+payload = json.loads(sys.stdin.buffer.read().decode("utf-8-sig"))
 fmt = payload.get("format", "docx")
-title = payload.get("title", "项目记录")
-project = payload.get("project", "项目")
-body_html = payload.get("body", "")
-metadata = payload.get("metadata", [])
+
+def xml_safe_text(value):
+    """Remove characters that are forbidden by XML 1.0 and WordprocessingML."""
+    text = str(value if value is not None else "")
+    return "".join(
+        char for char in text
+        if char in "\t\n\r"
+        or 0x20 <= ord(char) <= 0xD7FF
+        or 0xE000 <= ord(char) <= 0xFFFD
+        or 0x10000 <= ord(char) <= 0x10FFFF
+    )
+
+title = xml_safe_text(payload.get("title", "项目记录"))
+project = xml_safe_text(payload.get("project", "项目"))
+body_html = xml_safe_text(payload.get("body", ""))
+metadata = [
+    (xml_safe_text(key), xml_safe_text(value))
+    for key, value in payload.get("metadata", [])
+]
 
 def plain_from_html(source):
     from html.parser import HTMLParser
     class Text(HTMLParser):
         def __init__(self): super().__init__(); self.parts=[]
-        def handle_data(self, data): self.parts.append(data)
+        def handle_data(self, data): self.parts.append(xml_safe_text(data))
         def handle_starttag(self, tag, attrs):
             if tag in ('p','div','br','li','tr','h1','h2','h3','blockquote'): self.parts.append('\n')
     parser=Text(); parser.feed(source or '')
@@ -48,7 +63,7 @@ if fmt == 'docx':
     normal=doc.styles['Normal'];normal.font.name='Microsoft YaHei';normal.font.size=Pt(10.5);normal._element.rPr.rFonts.set(qn('w:eastAsia'),'Microsoft YaHei')
     p=doc.add_paragraph(project);p.style='Subtitle'
     doc.add_heading(title,0)
-    for k,v in metadata: doc.add_paragraph(f'{k}：{v}')
+    for k,v in metadata: doc.add_paragraph(xml_safe_text(f'{k}：{v}'))
     class DocxBody(HTMLParser):
         def __init__(self, document):
             super().__init__(convert_charrefs=True); self.doc=document; self.p=None; self.styles=[]; self.link=None; self.lists=[]; self.table=None; self.row=0; self.col=0; self.cell=None; self.inline=[]
@@ -79,8 +94,19 @@ if fmt == 'docx':
             if tag=='img':
                 src=attrs.get('src','')
                 if src.startswith('data:image/') and ';base64,' in src:
-                    try: self.para().add_run().add_picture(BytesIO(base64.b64decode(src.split(';base64,',1)[1])),width=Inches(5.8))
-                    except Exception: pass
+                    try:
+                        image_data = base64.b64decode(
+                            src.split(';base64,', 1)[1],
+                            validate=True,
+                        )
+                        self.para().add_run().add_picture(
+                            BytesIO(image_data),
+                            width=Inches(5.8),
+                        )
+                    except Exception as exc:
+                        raise RuntimeError(
+                            f"正文图片无法写入 Word：{exc}"
+                        ) from exc
         def handle_starttag(self, tag, attrs): self.starttag(tag,attrs)
         def handle_endtag(self, tag):
             if tag=='table': self.table=None; self.cell=None; self.p=None
@@ -91,6 +117,7 @@ if fmt == 'docx':
             elif tag in ('strong','b','em','i','u','s') and tag in self.styles: self.styles.reverse();self.styles.remove(tag);self.styles.reverse()
             elif tag=='a': self.link=None
         def handle_data(self, data):
+            data=xml_safe_text(data)
             if not data: return
             p=self.para()
             if self.link:

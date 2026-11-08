@@ -231,3 +231,18 @@ body{background:#f4f6fa;color:#18243a}.sidebar{height:100dvh;min-height:0;overfl
 
 /* Keep long attachment names and inline progress from squeezing meeting rows */
 .meeting-detail-grid{grid-template-columns:minmax(0,1fr) minmax(0,1fr);min-width:0}.meeting-detail-grid>*{min-width:0}.detail-section{min-width:0;max-width:100%}.attendee-row{min-width:0;max-width:100%;flex-wrap:wrap;overflow-wrap:anywhere}.attendee-row>*{min-width:0;max-width:100%}.attendee-row>.analysis-progress-inline{flex:1 0 100%;width:100%;min-width:0;margin:5px 0 0}.attendee-row>a,.attendee-row>button{overflow-wrap:anywhere}
+
+.roster .roster-total {display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap;background:#edf6f3;color:#214e45;padding:14px 16px;border-radius:10px}
+.roster-total strong {font-size:30px;margin-left:8px;font-variant-numeric:tabular-nums}
+.roster-total span,.roster h4,.roster details {font-size:13px}
+.roster h4 {margin:20px 0 4px;color:#536467}
+.roster ul {padding:0;margin:0;list-style:none}
+.roster li {display:flex;align-items:flex-start;gap:10px;padding:14px 0;border-bottom:1px solid #e1e8e6}
+.roster li:last-child {border:0}
+.roster-person {flex:1;min-width:0;overflow-wrap:anywhere}
+.roster details {margin-top:5px;color:#48635d}
+.roster summary {cursor:pointer}
+.roster-status {display:grid;justify-items:end;gap:5px}
+.roster-pill {font-size:12px;padding:3px 9px;border-radius:12px;background:#f1f2f3;color:#536069}
+.roster-pill.present {background:#e3f3e9;color:#225d40}
+.roster-pill.manual {background:#fff1da;color:#794b11}

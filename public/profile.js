@@ -35,7 +35,7 @@ function profilePage(){
 
 document.addEventListener('click',async e=>{
   if(e.target.closest('[data-action="reset-avatar"]')){
-    try{const response=await fetch('/api/profile/avatar/reset',{method:'POST',credentials:'same-origin'}),result=await response.json();if(!response.ok)throw Error(result.error||'恢复默认头像失败');currentUser.avatar=result.avatar;if(state){const person=state.people.find(p=>p.id===currentUser.id);if(person)person.avatar=result.avatar}syncUserMenu();const preview=document.querySelector('#profile-avatar-preview');if(preview)preview.innerHTML=`<img src="${esc(result.avatar)}" alt="系统默认头像">`;toast('已恢复系统默认头像')}catch(err){toast(err.message)}
+    try{const response=await fetch('/api/profile/avatar/reset',{method:'POST',credentials:'same-origin'}),result=await response.json();if(!response.ok)throw Error(result.error||'恢复默认头像失败');currentUser.avatar=result.avatar;if(state){const person=state.people.find(p=>p.id===currentUser.id);if(person)person.avatar=result.avatar}syncUserMenu();const preview=document.querySelector('#profile-avatar-preview');if(preview)preview.innerHTML=`<img src="${esc(result.avatar)}" alt="系统默认头像">`;toast('已恢复系统默认头像')}catch(err){toastError(err.message)}
     return;
   }
   const toggle=e.target.closest('#top-avatar');
@@ -49,7 +49,7 @@ document.addEventListener('change',async e=>{
   if(e.target.id!=='avatar-upload')return;
   const file=e.target.files?.[0];if(!file)return;
   if(!['image/png','image/jpeg','image/webp'].includes(file.type)||file.size>1024*1024){toast('请选择常见图片格式，大小不超过1兆字节。');e.target.value='';return}
-  const reader=new FileReader();reader.onload=async()=>{try{const result=await fetch('/api/profile/avatar',{method:'POST',credentials:'same-origin',headers:{'content-type':'application/json'},body:JSON.stringify({avatarData:reader.result})});const data=await result.json();if(!result.ok)throw Error(data.error||'头像上传失败');currentUser.avatar=data.avatar;if(state){const person=state.people.find(p=>p.id===currentUser.id);if(person)person.avatar=data.avatar}syncUserMenu();const preview=document.querySelector('#profile-avatar-preview');if(preview)preview.innerHTML=`<img src="${esc(data.avatar)}" alt="个人头像">`;toast('头像已更新')}catch(err){toast(err.message)}};reader.onerror=()=>toast('无法读取所选图片。');reader.readAsDataURL(file);
+  const reader=new FileReader();reader.onload=async()=>{try{const result=await fetch('/api/profile/avatar',{method:'POST',credentials:'same-origin',headers:{'content-type':'application/json'},body:JSON.stringify({avatarData:reader.result})});const data=await result.json();if(!result.ok)throw Error(data.error||'头像上传失败');currentUser.avatar=data.avatar;if(state){const person=state.people.find(p=>p.id===currentUser.id);if(person)person.avatar=data.avatar}syncUserMenu();const preview=document.querySelector('#profile-avatar-preview');if(preview)preview.innerHTML=`<img src="${esc(data.avatar)}" alt="个人头像">`;toast('头像已更新')}catch(err){toastError(err.message)}};reader.onerror=()=>toastError('无法读取所选图片。');reader.readAsDataURL(file);
 });
 
 document.addEventListener('submit',async e=>{
@@ -57,11 +57,11 @@ document.addEventListener('submit',async e=>{
   if(form.id==='profile-form'){
     e.preventDefault();e.stopImmediatePropagation();if(!form.reportValidity())return;
     const button=form.querySelector('[type=submit]'),data=Object.fromEntries(new FormData(form));button.disabled=true;button.textContent='正在保存…';
-    try{const response=await fetch('/api/profile',{method:'PATCH',credentials:'same-origin',headers:{'content-type':'application/json'},body:JSON.stringify(data)}),result=await response.json();if(!response.ok)throw Error(result.error||'资料保存失败');Object.assign(currentUser,result);if(state){const person=state.people.find(p=>p.id===currentUser.id);if(person){person.name=result.name;person.account=result.account;person.avatar=result.avatar}}syncUserMenu();render();toast('个人资料已保存')}catch(err){toast(err.message);button.disabled=false;button.textContent='重试保存'}
+    try{const response=await fetch('/api/profile',{method:'PATCH',credentials:'same-origin',headers:{'content-type':'application/json'},body:JSON.stringify(data)}),result=await response.json();if(!response.ok)throw Error(result.error||'资料保存失败');Object.assign(currentUser,result);if(state){const person=state.people.find(p=>p.id===currentUser.id);if(person){person.name=result.name;person.account=result.account;person.avatar=result.avatar}}syncUserMenu();render();toast('个人资料已保存')}catch(err){toastError(err.message);button.disabled=false;button.textContent='重试保存'}
   }
   if(form.id==='password-form'){
     e.preventDefault();e.stopImmediatePropagation();if(!form.reportValidity())return;
     const button=form.querySelector('[type=submit]'),data=Object.fromEntries(new FormData(form));if(data.newPassword!==data.confirmPassword){toast('两次输入的新密码不一致。');return}button.disabled=true;button.textContent='正在更新…';
-    try{const response=await fetch('/api/profile/password',{method:'POST',credentials:'same-origin',headers:{'content-type':'application/json'},body:JSON.stringify(data)}),result=await response.json();if(!response.ok)throw Error(result.error||'密码更新失败');form.reset();toast('密码已更新')}catch(err){toast(err.message);button.disabled=false;button.textContent='更新密码'}
+    try{const response=await fetch('/api/profile/password',{method:'POST',credentials:'same-origin',headers:{'content-type':'application/json'},body:JSON.stringify(data)}),result=await response.json();if(!response.ok)throw Error(result.error||'密码更新失败');form.reset();toast('密码已更新')}catch(err){toastError(err.message);button.disabled=false;button.textContent='更新密码'}
   }
 });

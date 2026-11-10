@@ -52,6 +52,13 @@ test('清除全队重点、全队提醒仅在真正改变时留痕',async()=>{
   await api('/api/focus-marks','POST',{...target,stars:0});assert.equal((await events()).length,before+1);await api('/api/focus-marks','POST',{...target,stars:0});assert.equal((await events()).length,before+1);
   await api('/api/meetings/reminders','POST',{meetingId:'m-b',teamMinutes:[30,10]});const count=(await events()).length;await api('/api/meetings/reminders','POST',{meetingId:'m-b',teamMinutes:[10,30]});assert.equal((await events()).length,count);
 });
+test('创建临近会议后立即触发默认提醒，消息包含完整日期、时间、形式和地点',async()=>{
+  const startAt=new Date(Date.now()+10*60*1000),date=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Shanghai',year:'numeric',month:'2-digit',day:'2-digit'}).format(startAt),start=new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Shanghai',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).format(startAt),endAt=new Date(startAt.getTime()+60*60*1000),end=new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Shanghai',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).format(endAt);
+  const created=await api('/api/meetings','POST',{title:'提醒即时触发验收',topic:'确认临近会议提醒',date,start,end,format:'线下',location:'社区活动室 2F',hostId:'u-1',attendeeIds:['u-1','u-2']});assert.equal(created.status,201);
+  let leaderNotices=[],memberNotices=[];for(let i=0;i<20;i++){leaderNotices=(await api('/api/notifications')).data.filter(item=>item.meetingId===created.data.id);memberNotices=(await api('/api/notifications','GET',undefined,'member')).data.filter(item=>item.meetingId===created.data.id);if(leaderNotices.length&&memberNotices.length)break;await new Promise(resolve=>setTimeout(resolve,20))}
+  assert.equal(leaderNotices.length,1);assert.equal(memberNotices.length,1);const notices=[...leaderNotices,...memberNotices];
+  for(const notice of notices){assert.match(notice.message,new RegExp(`${date} ${start}`));assert.match(notice.message,/线下/);assert.match(notice.message,/会议地点：社区活动室 2F/)}
+});
 test('同内容分工切换产生一次日志更新，删除保留摘要但禁止跳转',async()=>{
   const created=await api('/api/logs','POST',{date:'2026-01-01',text:'工作记录',linkAssignmentId:'a-1'});assert.equal(created.status,201);
   const id=created.data.id,before=(await events()).length;const updated=await api('/api/logs','PATCH',{id,version:1,date:'2026-01-01',text:'工作记录',linkAssignmentId:'a-2'});assert.equal(updated.data.linkAssignmentId,'a-2');assert.equal((await events()).length,before+1);

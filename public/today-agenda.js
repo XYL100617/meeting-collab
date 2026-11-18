@@ -17,7 +17,7 @@ function buildTodayAgenda(todos, meetings, {date, userId, projectId, showComplet
 
 function renderTodayAgendaItem(item, {expanded=false, detailKey=item.key||item.id, contextHtml=''}={}) {
   const escape=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  const isMeeting=item.kind==='meeting',completed=!isMeeting&&item.status==='已完成',cancelled=isMeeting&&item.status==='已取消';
+  const isMeeting=item.kind==='meeting',completed=!isMeeting&&item.status==='已完成',cancelled=isMeeting&&item.status==='已取消',sourceInactive=!isMeeting&&item.sourceInactive===true;
   const stars=Math.max(0,Math.min(3,Number(item.stars)||0));
   const starLabel=stars?`${'★'.repeat(stars)}${'☆'.repeat(3-stars)} · ${['','一般关注','重要参考','优先关注'][stars]}`:'☆ 设置个人关注';
   const markAction=isMeeting?'edit-agenda-meeting-mark':'edit-todo-mark';
@@ -28,7 +28,7 @@ function renderTodayAgendaItem(item, {expanded=false, detailKey=item.key||item.i
   return `<article class="schedule-item ${isMeeting?'meeting-agenda':'todo-agenda'} priority-${stars}${completed?' completed':''}${cancelled?' cancelled':''}${!item.start?' unscheduled-item':''}" data-schedule-id="${escape(item.id)}" data-schedule-kind="${item.kind}">
     ${item.start?`<time class="schedule-time">${escape(item.start)}<small>${escape(item.end||'')}</small></time><span class="schedule-node" aria-hidden="true"></span>`:''}
     <div class="schedule-card"><div class="schedule-card-heading"><div class="schedule-title"><span class="agenda-type${isMeeting?'':' todo'}">${isMeeting?(item.isParticipant===false?'项目会议':'应参会会议'):'私人待办'}</span><b>${escape(item.title)}</b></div><span class="schedule-status${completed?' is-complete':''}${cancelled?' is-cancelled':''}">${completed?'✓ 已完成':escape(item.status||'未完成')}</span></div>
-      <div class="schedule-meta"><button class="schedule-stars" data-action="${markAction}" data-id="${escape(item.id)}" data-project="${escape(item.projectId||'')}" title="个人星级仅本人可见">${starLabel}</button>${isMeeting?`<small>${escape(item.projectName)} · ${escape(item.host||'未填写')} 主持${item.isParticipant===false?' · 未列入应参会名单':''}</small>`:'<small>仅本人可见</small>'}${!isMeeting?`<button class="button small schedule-complete" data-action="todo-toggle" data-id="${escape(item.id)}" data-status="${completed?'未完成':'已完成'}">${completed?'重新打开':'完成'}</button>`:''}</div>
+      <div class="schedule-meta"><button class="schedule-stars" data-action="${markAction}" data-id="${escape(item.id)}" data-project="${escape(item.projectId||'')}" title="个人星级仅本人可见">${starLabel}</button>${isMeeting?`<small>${escape(item.projectName)} · ${escape(item.host||'未填写')} 主持${item.isParticipant===false?' · 未列入应参会名单':''}</small>`:'<small>仅本人可见</small>'}${!isMeeting&&!sourceInactive?`<button class="button small schedule-complete" data-action="todo-toggle" data-id="${escape(item.id)}" data-status="${completed?'未完成':'已完成'}">${completed?'重新打开':'完成'}</button>`:sourceInactive?`<small class="schedule-source-inactive">${escape(item.sourceInactiveReason||'来源已改派，执行入口已停用')}</small>`:''}</div>
       <details class="schedule-details" data-agenda-key="${escape(detailKey)}"${expanded?' open':''}><summary><span class="detail-expand-label">展开详情</span><span class="detail-collapse-label">收起详情</span></summary><div class="schedule-detail-body">${details}</div></details>
     </div></article>`;
 }

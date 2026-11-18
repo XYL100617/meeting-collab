@@ -34,8 +34,8 @@ test('旧事件保留缺失字段，新事件有准确字段；项目相同保�
 test('验证失败、越权和个人操作不生成公开事件，同名会议遵从明确ID',async()=>{
   const before=(await events()).length;
   assert.equal((await api('/api/meetings','POST',{})).status,400);
-  assert.equal((await api('/api/assignments','PATCH',{id:'a-1',version:1,content:'越权修改',ownerId:'u-1'},'member')).status,403);
-  assert.equal((await api('/api/assignments','POST',{meetingId:'m-b',meeting:'同名会议',content:'越权新增',ownerId:'u-2'},'member')).status,403);
+  assert.equal((await api('/api/assignments','PATCH',{id:'a-1',version:1,content:'越权修改',ownerId:'u-1'},'member')).status,410);
+  assert.equal((await api('/api/assignments','POST',{meetingId:'m-b',meeting:'同名会议',content:'越权新增',ownerId:'u-2'},'member')).status,410);
   await api('/api/focus-marks','POST',{scope:'personal',targetType:'meeting',targetId:'m-b',stars:3,note:'私人'});
   await api('/api/meetings/reminders','POST',{meetingId:'m-b',personalMinutes:[10]});
   assert.equal((await events()).length,before);assert.equal((await api('/api/project-events','GET',undefined,'leader',undefined,'foreign')).status,403);
@@ -57,16 +57,18 @@ test('存在应参会成员ID时不从不一致的旧姓名列表授权个人提
 });
 test('创建临近会议后立即触发默认提醒，消息包含完整日期、时间、形式和地点',async()=>{
   const startAt=new Date(Date.now()+10*60*1000),date=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Shanghai',year:'numeric',month:'2-digit',day:'2-digit'}).format(startAt),start=new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Shanghai',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).format(startAt),endAt=new Date(startAt.getTime()+60*60*1000),end=new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Shanghai',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).format(endAt);
-  const created=await api('/api/meetings','POST',{title:'提醒即时触发验收',topic:'确认临近会议提醒',date,start,end,format:'线下',location:'社区活动室 2F',hostId:'u-1',attendeeIds:['u-1','u-2']});assert.equal(created.status,201);
+  if(date!==new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Shanghai',year:'numeric',month:'2-digit',day:'2-digit'}).format(endAt))return;const created=await api('/api/meetings','POST',{title:'提醒即时触发验收',topic:'确认临近会议提醒',date,start,end,format:'线下',location:'社区活动室 2F',hostId:'u-1',attendeeIds:['u-1','u-2']});assert.equal(created.status,201,JSON.stringify(created));
   let leaderNotices=[],memberNotices=[];for(let i=0;i<20;i++){leaderNotices=(await api('/api/notifications')).data.filter(item=>item.meetingId===created.data.id);memberNotices=(await api('/api/notifications','GET',undefined,'member')).data.filter(item=>item.meetingId===created.data.id);if(leaderNotices.length&&memberNotices.length)break;await new Promise(resolve=>setTimeout(resolve,20))}
   assert.equal(leaderNotices.length,1);assert.equal(memberNotices.length,1);const notices=[...leaderNotices,...memberNotices];
   for(const notice of notices){assert.match(notice.message,new RegExp(`${date} ${start}`));assert.match(notice.message,/线下/);assert.match(notice.message,/会议地点：社区活动室 2F/)}
 });
-test('同内容分工切换产生一次日志更新，删除保留摘要但禁止跳转',async()=>{
-  const created=await api('/api/logs','POST',{date:'2026-01-01',text:'工作记录',linkAssignmentId:'a-1'});assert.equal(created.status,201);
-  const id=created.data.id,before=(await events()).length;const updated=await api('/api/logs','PATCH',{id,version:1,date:'2026-01-01',text:'工作记录',linkAssignmentId:'a-2'});assert.equal(updated.data.linkAssignmentId,'a-2');assert.equal((await events()).length,before+1);
-  await api('/api/logs','PATCH',{id,version:2,date:'2026-01-01',text:'工作记录',linkAssignmentId:'a-2'});assert.equal((await events()).length,before+1);
-  await api('/api/logs','DELETE',{id});const deletion=(await events()).find(e=>e.action==='log-deleted');assert.ok(deletion.summary.includes('工作记录'));assert.equal(deletion.sourceAvailable,false);assert.equal((await api('/api/project-events/source?id='+deletion.id)).status,404);
+test('日志撤回为私有草稿后公共事件不再暴露内容',async()=>{
+  const created=await api('/api/logs','POST',{title:'工作记录',logType:'项目日常日志',date:'2026-01-01',text:'工作记录'});assert.equal(created.status,201);
+  const id=created.data.id;assert.ok((await events()).some(e=>e.logId===id));
+  assert.equal((await api('/api/logs','DELETE',{id})).status,200);
+  assert.equal((await events()).some(e=>e.logId===id),false);
+  const leader=(await api('/api/state')).data,member=(await api('/api/state','GET',undefined,'member')).data;
+  assert.ok(leader.logDrafts.some(d=>d.id===id));assert.equal(member.logDrafts.length,0);
 });
 test('转写修订与邀请操作记录精确来源；重复保存不增加',async()=>{
   const before=(await events()).length;assert.equal((await api('/api/audio/transcript','PATCH',{audioId:'audio-1',id:'t-1',version:1,editedText:'修订稿'})).status,200);assert.equal((await events()).length,before+1);

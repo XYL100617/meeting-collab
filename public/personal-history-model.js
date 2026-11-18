@@ -5,8 +5,8 @@ function buildPersonalHistory(workspace, memberId, {viewerId,focusMarks=workspac
   if(!member)throw new Error('成员不属于当前项目。');
   const personId=(id,name)=>{if(id)return id;const matches=people.filter(p=>p.name===name);return matches.length===1?matches[0].id:null};
   const localDay=value=>{const d=new Date(value);return Number.isFinite(d.getTime())?new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Shanghai',year:'numeric',month:'2-digit',day:'2-digit'}).format(d):String(value||'').slice(0,10)};
-  const meetings=workspace.meetings||[],assignments=workspace.assignments||[],logs=workspace.logs||[];
-  const events=[...new Map((workspace.events||[]).map((event,i)=>{
+  const meetings=workspace.meetings||[],assignments=workspace.assignments||[],tasks=workspace.tasks||[],logs=workspace.logs||[];
+  const events=[...new Map((workspace.events||[]).filter(event=>!(workspace.logDrafts||[]).some(d=>d.id===event.logId)&&!(workspace.files||[]).some(f=>f.id===event.fileId&&(workspace.logDrafts||[]).some(d=>d.id===f.logId||f.documentType==='log'&&d.id===f.documentId))).map((event,i)=>{
     if(event.projectId&&event.projectId!==workspace.project.id||event.source?.projectId&&event.source.projectId!==workspace.project.id)return null;
     const e=normalizeProjectEvent(workspace,event),s=e.source;
     const assignmentId=e.assignmentId||(s?.type==='assignment'?s.id:null),logId=e.logId||(s?.type==='log'?s.id:null);
@@ -16,7 +16,7 @@ function buildPersonalHistory(workspace, memberId, {viewerId,focusMarks=workspac
   }).filter(Boolean)).values()];
   const consumed=new Set(),entries=new Map(),checkedMeetings=new Set(),pastAssignments=new Set();
   const relation=(condition,label)=>condition?label:null;
-  const source=(type,id)=>({type,id,available:(type==='meeting'?meetings:type==='assignment'?assignments:logs).some(x=>x.id===id)});
+  const source=(type,id)=>({type,id,available:(type==='meeting'?meetings:type==='assignment'?assignments:type==='task'?tasks:logs).some(x=>x.id===id)});
   const add=(id,title,category,at,date,relations,details,record)=>{
     relations=[...new Set(relations.filter(Boolean))];if(!relations.length)return;
     const moment=normalizeProjectEvent(workspace,{at,date}),timePrecision=moment.at?'exact':moment.date?'date':'unknown';
@@ -115,6 +115,11 @@ function buildPersonalHistory(workspace, memberId, {viewerId,focusMarks=workspac
       category='日志';const log=logs.find(l=>l.id===event.logId);
       relations=[relation(direct,'日志操作'),relation(log&&personId(log.authorId,log.author)===memberId,'日志作者')];
       if(event.logId)record=source('log',event.logId);
+    }else if(event.taskId||event.kind==='任务'){
+      category='任务';const task=tasks.find(t=>t.id===event.taskId);
+      relations=[relation(direct,'任务操作'),relation(event.assignedToId===memberId||task?.ownerId===memberId,'负责人'),relation(event.before?.ownerId===memberId,'原负责人'),relation(event.after?.ownerId===memberId,'新负责人')];
+      if(event.taskId)record=source('task',event.taskId);
+      details.push({label:'任务编号',value:task?.number},{label:'任务状态',value:event.after?.status||task?.status});
     }else if(event.assignmentId||event.kind==='工作分配'){
       category='分工';relations=[relation(direct,'分工操作'),relation(event.assignedToId===memberId,'负责人（当时）'),relation(event.before?.ownerId===memberId,'原负责人'),relation(event.after?.ownerId===memberId,'新负责人')];
       if(event.assignmentId)record=source('assignment',event.assignmentId);
@@ -126,11 +131,12 @@ function buildPersonalHistory(workspace, memberId, {viewerId,focusMarks=workspac
     }else continue;
     add(`event:${event.id}`,event.title,category,event.at,event.date,relations,details,record);
   }
+  const currentTasks=tasks.filter(t=>t.ownerId===memberId);const pastTasks=new Set(tasks.flatMap(t=>(t.history||[]).filter(h=>h.beforeOwnerId===memberId||h.afterOwnerId===memberId).map(()=>t.id)));
   const currentAssignments=assignments.filter(a=>personId(a.ownerId,a.owner)===memberId);
   return {
     project:{id:workspace.project.id,name:workspace.project.name,status:workspace.project.status},
     member:{id:member.id,name:member.name,role:member.role,joined:member.joined||''},
-    summary:{initiated:meetings.filter(m=>historicMeetingRoles(m).includes('发起')).length,hosted:meetings.filter(m=>historicMeetingRoles(m).includes('主持')).length,invited:meetings.filter(m=>historicMeetingRoles(m).includes('受邀')).length,checkedIn:checkedMeetings.size,currentAssignments:currentAssignments.length,historicalAssignments:[...pastAssignments].filter(id=>!currentAssignments.some(a=>a.id===id)).length,logs:logs.filter(l=>personId(l.authorId,l.author)===memberId).length},
+    summary:{initiated:meetings.filter(m=>historicMeetingRoles(m).includes('发起')).length,hosted:meetings.filter(m=>historicMeetingRoles(m).includes('主持')).length,invited:meetings.filter(m=>historicMeetingRoles(m).includes('受邀')).length,checkedIn:checkedMeetings.size,currentTasks:currentTasks.length,historicalTasks:[...pastTasks].filter(id=>!currentTasks.some(t=>t.id===id)).length,currentAssignments:currentAssignments.length,historicalAssignments:[...pastAssignments].filter(id=>!currentAssignments.some(a=>a.id===id)).length,logs:logs.filter(l=>personId(l.authorId,l.author)===memberId).length},
     entries:[...entries.values()].sort((a,b)=>(Date.parse(b.at)||0)-(Date.parse(a.at)||0)||b.id.localeCompare(a.id)),
   };
 }

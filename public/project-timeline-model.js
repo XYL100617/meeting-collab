@@ -14,8 +14,8 @@ function projectTimelineMoment(value,day='',clock='') {
 }
 
 function buildProjectTimeline(workspace,{marks=[],userId='',scope='mine'}={}) {
-  const people=workspace.people||[],meetings=workspace.meetings||[],assignments=workspace.assignments||[],logs=workspace.logs||[];
-  const meetingById=new Map(meetings.map(m=>[m.id,m])),assignmentById=new Map(assignments.map(a=>[a.id,a])),logById=new Map(logs.map(l=>[l.id,l]));
+  const people=workspace.people||[],meetings=workspace.meetings||[],assignments=workspace.assignments||[],tasks=workspace.tasks||[],logs=workspace.logs||[];
+  const meetingById=new Map(meetings.map(m=>[m.id,m])),assignmentById=new Map(assignments.map(a=>[a.id,a])),taskById=new Map(tasks.map(t=>[t.id,t])),logById=new Map(logs.map(l=>[l.id,l]));
   const personId=(id,name)=>{if(id)return id;const found=people.filter(p=>p.name===name);return found.length===1?found[0].id:null};
   const legacyMeeting=name=>{const found=meetings.filter(m=>m.title===name);return found.length===1?found[0]:null};
   const assignmentMeeting=a=>a?.meetingId?meetingById.get(a.meetingId):legacyMeeting(a?.meeting);
@@ -34,7 +34,7 @@ function buildProjectTimeline(workspace,{marks=[],userId='',scope='mine'}={}) {
     return {key:`${type}:${record.id}`,id:record.id,type,kind,title,record,...moment,stars:Number.isInteger(stars)&&stars>=0&&stars<=3?stars:0,mark:mark?{scope:mark.scope,note:mark.note||''}:null,
       meetingId:meeting?.id||'',meetingTitle:meeting?.title||'',logId:log?.id||'',logTitle:log?`${log.author||'历史成员'} · ${log.date||'未记录日期'} 工作日志`:'',personIds};
   };
-  const targets=[],nodes=[],meetingNodes=new Map();
+  const targets=[],nodes=[],meetingNodes=new Map(),taskNodes=new Map();
   for(const meeting of meetings){
     const invitations=Array.isArray(meeting.attendeeIds)?meeting.attendeeIds:(meeting.attendees||[]).map(name=>personId(null,name)).filter(Boolean);
     const records=meeting.attendance||[],checkedIds=Array.isArray(meeting.checkedIds)?meeting.checkedIds:(meeting.checked||[]).map(name=>personId(null,name)).filter(Boolean);
@@ -51,13 +51,14 @@ function buildProjectTimeline(workspace,{marks=[],userId='',scope='mine'}={}) {
     }
     nodes.push(node);targets.push(node);meetingNodes.set(meeting.id,node);
   }
+  for(const task of tasks){const node=decorate('task',task,task.title,'主任务',projectTimelineMoment(task.createdAt),null,ids(task.ownerId,task.createdById));Object.assign(node,{timeLabel:'创建时间',logs:[],files:[],activities:[]});nodes.push(node);targets.push(node);taskNodes.set(task.id,node)}
   const add=(target,group)=>{targets.push(target);const meetingNode=meetingNodes.get(target.meetingId);if(meetingNode)meetingNode[group].push(target);else nodes.push(target)};
   for(const file of workspace.files||[]){
     if(['正文图片','会议录音'].includes(file.kind))continue;
-    add(decorate('file',file,file.name,'资料',projectTimelineMoment(file.uploadedAt),fileMeeting(file),ids(personId(file.uploaderId||file.uploadedById,file.uploadedBy))),'files');
+    const target=decorate('file',file,file.name,'资料',projectTimelineMoment(file.uploadedAt),fileMeeting(file),ids(personId(file.uploaderId||file.uploadedById,file.uploadedBy)));if(file.taskId&&taskNodes.has(file.taskId)){taskNodes.get(file.taskId).files.push(target);targets.push(target)}else add(target,'files');
   }
   for(const assignment of assignments)add(decorate('assignment',assignment,assignment.content,'工作分配',projectTimelineMoment(assignment.createdAt),assignmentMeeting(assignment),ids(personId(assignment.ownerId,assignment.owner),personId(assignment.byId,assignment.by))),'assignments');
-  for(const log of logs)add(decorate('log',log,String(log.text||'工作日志').slice(0,100),'工作日志',projectTimelineMoment(log.createdAt,log.date,log.time),logMeeting(log),ids(personId(log.authorId,log.author))),'logs');
+  for(const log of logs){const target=decorate('log',log,log.title||String(log.text||'工作日志').slice(0,100),'工作日志',projectTimelineMoment(log.createdAt,log.date,log.time),logMeeting(log),ids(personId(log.authorId,log.author)));const linked=[...new Set((log.taskIds||[]).filter(id=>taskNodes.has(id)))];if(linked.length){targets.push(target);for(const id of linked)taskNodes.get(id).logs.push(target)}else add(target,'logs')}
   const events=[...new Map((workspace.events||[]).filter(event=>!event.projectId||event.projectId===workspace.project.id).map((event,i)=>[event.id||`legacy-${i}`,{...projectTimelineEvents.normalizeProjectEvent(workspace,event,{id:userId}),id:event.id||`legacy-${i}`}])).values()];
   for(const event of events){
     const source=event.source?.projectId===workspace.project.id?event.source:null;
@@ -65,8 +66,9 @@ function buildProjectTimeline(workspace,{marks=[],userId='',scope='mine'}={}) {
     const meeting=sourceMeeting||(event.meetingId?meetingById.get(event.meetingId):event.assignmentId?assignmentMeeting(assignmentById.get(event.assignmentId)):event.logId?logMeeting(logById.get(event.logId)):event.fileId?fileMeeting((workspace.files||[]).find(f=>f.id===event.fileId)||{}):null);
     const moment=projectTimelineMoment(event.at,event.date);if(!event.at)moment.time='';
     const entry={key:`event:${event.id}`,id:event.id,type:'event',kind:event.kind||'项目',title:event.title||'项目活动',record:event,...moment,timeLabel:event.at?'实际操作时间':'精确时间未记录',stars:0,personIds:ids(event.operator.id,event.personId,event.affectedMemberIds)};
-    const node=meetingNodes.get(meeting?.id);if(node)node.activities.push(entry);else nodes.push(entry);
+    const taskNode=taskNodes.get(event.taskId||source?.type==='task'&&source.id),linkedLog=logById.get(event.logId||source?.type==='log'&&source.id),linkedTaskNodes=[...new Set((event.taskId?[event.taskId]:linkedLog?.taskIds||[]).map(id=>taskNodes.get(id)).filter(Boolean))],node=meetingNodes.get(meeting?.id);if(taskNode)taskNode.activities.push(entry);else if(linkedTaskNodes.length)for(const linkedTask of linkedTaskNodes)linkedTask.activities.push(entry);else if(node)node.activities.push(entry);else nodes.push(entry);
   }
+  for(const node of taskNodes.values()){for(const key of ['files','logs','activities'])node[key].sort(order);node.highlightCount=[...node.files,...node.logs].filter(t=>t.stars===3).length}
   for(const node of meetingNodes.values()){
     for(const key of ['files','assignments','logs','activities'])node[key].sort(order);
     node.highlightCount=[node.minutes,...node.files,...node.assignments,...node.logs].filter(t=>t?.stars===3).length;

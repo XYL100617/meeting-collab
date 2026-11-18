@@ -13,7 +13,7 @@ before(async()=>{
   for(const name of ['server.mjs','public/personal-history-model.js','public/project-events-model.js'])await copyFile(path.join(root,name),path.join(dir,name));
   const people=[{id:'u-1',name:'甲',role:'组长'}],meeting=id=>({...body,id,host:'甲',organizer:'甲',organizerId:'u-1',attendees:['甲'],status:'待召开',scheduleVersion:1,checkedIds:[],attendance:[]});
   const workspace=(id,meetings)=>({project:{id,name:id,status:'进行中',startDate:'2026-01-01'},people,meetings,assignments:[],logs:[],events:[],files:[],invites:[],focusMarks:[]});
-  const w=workspace('p-test',[meeting('m-1'),meeting('m-2')]);w.assignments=[{id:'a-1',content:'第一场会议分工',ownerId:'u-1',owner:'甲',byId:'u-1',by:'甲',meetingId:'m-1'},{id:'a-2',content:'第二场会议分工',ownerId:'u-1',owner:'甲',byId:'u-1',by:'甲',meetingId:'m-2'}];
+  const w=workspace('p-test',[meeting('m-1'),meeting('m-2')]);w.assignments=[{id:'a-1',content:'第一场会议分工',ownerId:'u-1',owner:'甲',byId:'u-1',by:'甲',meetingId:'m-1',createdAt:'2026-11-01T10:00:00Z'},{id:'a-2',content:'第二场会议分工',ownerId:'u-1',owner:'甲',byId:'u-1',by:'甲',meetingId:'m-2',changeHistory:[{byId:'u-1',by:'甲',at:'2026-11-03T10:00:00Z',before:{ownerId:'u-1',owner:'甲',content:'原分工',due:'2026-11-08'},after:{ownerId:'u-1',owner:'甲',content:'调整后分工',due:'2026-11-09',note:'补充历史说明'}}]},{id:'a-invalid-date',content:'保留已完成状态',ownerId:'u-1',owner:'甲',byId:'u-1',by:'甲',due:'2026-02-31',acceptance:'历史验收条件',status:'已完成'}];
   await writeFile(path.join(dir,'data/store.json'),JSON.stringify({accounts:[{id:'u-1',name:'甲',account:'merge',salt:'merge-qa',password:scryptSync('demo1234','merge-qa',64).toString('hex')}],workspaces:[w,workspace('p-archive',[meeting('m-3')])],todos:[],sessions:[],notifications:[{id:'old-reminder',userId:'u-1',projectId:'p-test',meetingId:'m-1',createdAt:'2026-11-01T00:00:00Z',readAt:null,title:'旧提醒',dedupeKey:'old'}]}));
   const port=await new Promise((resolve,reject)=>{const s=createServer();s.once('error',reject);s.listen(0,'127.0.0.1',()=>{const p=s.address().port;s.close(()=>resolve(p))})});child=spawn(process.execPath,['server.mjs'],{cwd:dir,env:{...process.env,HOST:'127.0.0.1',PORT:String(port)},stdio:['ignore','pipe','pipe']});
   await new Promise((resolve,reject)=>{let out='',errors='';const timer=setTimeout(()=>reject(Error('Server start timeout')),10000);child.stdout.on('data',x=>{out+=x;if(out.includes(`localhost:${port}`)){clearTimeout(timer);resolve()}});child.stderr.on('data',x=>errors+=x);child.once('error',reject);child.once('exit',()=>reject(Error(errors||'Server exited')))});base=`http://127.0.0.1:${port}`;
@@ -30,12 +30,18 @@ test('合并保留会议版本冲突校验、准确事件与旧通知失效',asy
   const state=(await api('/api/state')).data,events=state.events.filter(e=>e.action==='meeting-updated');assert.equal(events.length,1);assert.equal(events[0].projectId,'p-test');assert.ok(events[0].at);assert.ok(events[0].fields.includes('title'));
   const db=JSON.parse(await readFile(path.join(dir,'data/store.json'),'utf8'));assert.equal(db.notifications.find(n=>n.id==='old-reminder').supersededAt,events[0].at);assert.ok(!(await api('/api/notifications')).data.some(n=>n.id==='old-reminder'));
 });
-test('合并保留日志分工会议一致性，并避免失败操作产生事件',async()=>{
-  const content={text:'日志说明',date:'2026-11-08',linkAssignmentId:'a-1'};
-  assert.equal((await api('/api/logs','POST',{...content,meetingId:'m-2'})).status,400);
-  const created=await api('/api/logs','POST',content);assert.equal(created.status,201);assert.equal(created.data.meetingId,'m-1');
-  assert.equal((await api('/api/logs','PATCH',{...content,id:created.data.id,version:1,meetingId:'m-1',linkAssignmentId:'a-2'})).status,400);
-  const changed=await api('/api/logs','PATCH',{...content,id:created.data.id,version:1,linkAssignmentId:'a-2'});assert.equal(changed.status,200);assert.equal(changed.data.meetingId,'m-2');assert.equal(changed.data.version,2);
+test('旧分工不再接受新日志关联，主任务日志保留版本和事件',async()=>{
+  const task=(await api('/api/state')).data.tasks.find(t=>t.legacyAssignmentId==='a-1');assert.ok(task);
+  assert.equal(task.history[0].action,'legacy-import');assert.equal(task.history[0].byId,'u-1');assert.equal(task.history[0].at,'2026-11-01T10:00:00Z');assert.equal(task.history[0].afterValues.title,'第一场会议分工');
+  const changedLegacy=(await api('/api/state')).data.tasks.find(t=>t.legacyAssignmentId==='a-2');assert.equal(changedLegacy.history[1].action,'legacy-change');assert.equal(changedLegacy.history[1].beforeValues.title,'原分工');assert.equal(changedLegacy.history[1].afterValues.title,'调整后分工');assert.equal(changedLegacy.history[1].reason,'补充历史说明');
+  const completedLegacy=(await api('/api/state')).data.tasks.find(t=>t.legacyAssignmentId==='a-invalid-date');assert.equal(completedLegacy.status,'已完成');assert.equal(completedLegacy.dueAt,null);assert.equal(completedLegacy.needsCompletion,true);assert.deepEqual(completedLegacy.submissions,[]);assert.equal(completedLegacy.acceptanceHistory,undefined);
+  const content={title:'日志说明',logType:'任务日志',text:'日志说明',date:'2026-11-08',taskIds:[task.id]};
+  const before=(await api('/api/state')).data.events.length;
+  assert.equal((await api('/api/logs','POST',{...content,linkAssignmentId:'a-1'})).status,410);
+  assert.equal((await api('/api/state')).data.events.length,before);
+  const created=await api('/api/logs','POST',content);assert.equal(created.status,201);assert.deepEqual(created.data.taskIds,[task.id]);
+  assert.equal((await api('/api/logs','PATCH',{...content,id:created.data.id,version:1,linkAssignmentId:'a-2'})).status,410);
+  const changed=await api('/api/logs','PATCH',{...content,id:created.data.id,version:1,text:'日志更新'});assert.equal(changed.status,200);assert.equal(changed.data.version,2);
   assert.equal((await api('/api/state')).data.events.filter(e=>e.logId===created.data.id).length,2);
 });
 test('合并保留归档阻塞、操作人时间及归档后个人设置例外',async()=>{

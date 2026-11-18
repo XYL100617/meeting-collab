@@ -39,13 +39,11 @@ test('本人查询返回个人星级，查看他人回顾不返回任何私人�
   const other=(await api('/api/personal-history?personId=u-2')).data;
   assert.doesNotMatch(JSON.stringify(other),/HISTORY-PRIVATE-FOCUS|乙的私人待办/);assert.ok(other.entries.every(e=>!Object.hasOwn(e,'personalStars')));
 });
-test('负责人调整持久化原、新负责人快照及准确事件时间',async()=>{
-  const result=await api('/api/assignments','PATCH',{id:'a-1',ownerId:'u-3',content:'整理材料',due:'2026-11-05',version:1});assert.equal(result.status,200);
-  const state=(await api('/api/state')).data,event=state.events.find(e=>e.assignmentId==='a-1');
-  assert.equal(event.action,'assignment-updated');assert.ok(event.at);assert.equal(event.before.ownerId,'u-2');assert.equal(event.after.ownerId,'u-3');assert.ok(event.affectedMemberIds.includes('u-2'));assert.ok(event.affectedMemberIds.includes('u-3'));
-  const former=(await api('/api/personal-history?personId=u-2')).data,current=(await api('/api/personal-history?personId=u-3')).data;
-  assert.equal(former.summary.currentAssignments,0);assert.equal(former.summary.historicalAssignments,1);assert.equal(current.summary.currentAssignments,1);
-  assert.equal(former.entries.filter(e=>e.id===`event:${event.id}`).length,1);assert.ok(former.entries.find(e=>e.id===`event:${event.id}`).relations.includes('原负责人'));
+test('历史分工转为主任务，改派保留负责人快照',async()=>{
+  const state=(await api('/api/state')).data,task=state.tasks.find(t=>t.legacyAssignmentId==='a-1');assert.ok(task);assert.equal(task.needsCompletion,true);
+  assert.equal((await api('/api/assignments','PATCH',{id:'a-1',ownerId:'u-3',version:1})).status,410);
+  const result=await api('/api/tasks/action','POST',{id:task.id,version:task.version,action:'reassign',ownerId:'u-3',reason:'调整负责人'});assert.equal(result.status,200);
+  const updated=(await api('/api/state')).data.tasks.find(t=>t.id===task.id);assert.equal(updated.ownerId,'u-3');assert.equal(updated.history[0].beforeOwnerId,'u-2');assert.equal(updated.history[0].afterOwnerId,'u-3');
 });
 
 test('会议调整记录当时关系和时间，新主持不继承创建事件',async()=>{

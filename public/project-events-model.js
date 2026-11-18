@@ -3,7 +3,7 @@
   const unique=(list,id)=>{const matches=(list||[]).filter(x=>x.id===id);return matches.length===1?matches[0]:null};
   function sourceFor(w,e){
     if(e.source)return {...e.source};
-    const pair=e.fileId?['file',e.fileId]:e.audioId?['audio',e.audioId]:e.assignmentId?['assignment',e.assignmentId]:e.logId?['log',e.logId]:e.inviteId?['invite',e.inviteId]:e.meetingId?[e.kind==='纪要'?'minutes':'meeting',e.meetingId]:e.kind==='项目'?['project',w.project.id]:e.kind==='成员'&&e.actorId?['member',e.actorId]:null;
+    const pair=e.fileId?['file',e.fileId]:e.audioId?['audio',e.audioId]:e.assignmentId?['assignment',e.assignmentId]:e.taskId?['task',e.taskId]:e.logId?['log',e.logId]:e.inviteId?['invite',e.inviteId]:e.meetingId?[e.kind==='纪要'?'minutes':'meeting',e.meetingId]:e.kind==='项目'?['project',w.project.id]:e.kind==='成员'&&e.actorId?['member',e.actorId]:null;
     return pair?{type:pair[0],id:pair[1],projectId:w.project.id}:null;
   }
   function resolveProjectEventSource(w,e,actor){
@@ -16,6 +16,7 @@
       case 'meeting':record=unique(w.meetings,s.id);break;
       case 'minutes':record=unique(w.meetings,s.id);if(!record?.summary?.trim()&&!record?.summaryHtml?.includes('<img'))record=null;break;
       case 'assignment':record=unique(w.assignments,s.id);break;
+      case 'task':record=unique(w.tasks,s.id);break;
       case 'log':record=unique(w.logs,s.id);break;
       case 'invite':if(actor&&w.people.find(p=>p.id===actor.id)?.role!=='组长')return null;record=unique(w.invites,s.id);break;
       case 'file':case 'audio':record=unique(w.files,s.id);if(record?.kind==='正文图片')record=null;break;
@@ -31,7 +32,7 @@
     const event={...details,projectId:w.project.id,at,date:day(at),actorId:actor?.id||details.actorId||null,operator:{id:actor?.id||details.actorId||null,name:actor?.name||'未记录'},summary:String(details.summary??details.detail??details.title??''),action:details.action||'recorded'};
     if(['meeting-checkin','meeting-supplement'].includes(event.action))event.kind='签到';
     event.source=sourceFor(w,event);
-    const source=event.source,collections={member:w.people,meeting:w.meetings,minutes:w.meetings,assignment:w.assignments,log:w.logs,file:w.files,audio:w.files};
+    const source=event.source,collections={member:w.people,meeting:w.meetings,minutes:w.meetings,assignment:w.assignments,task:w.tasks,log:w.logs,file:w.files,audio:w.files};
     const record=source&&(source.type==='project'?w.project:unique(collections[source.type],source.id));
     event.sourceName=details.sourceName||record?.title||record?.name||record?.content||(record?.author?`${record.author} 的工作日志`:'');
     return event;
@@ -44,7 +45,7 @@
     return {...e,projectId:e.projectId||w.project.id,at,date:at?day(at):(e.date||(/^\d{4}-\d{2}-\d{2}$/.test(value)?value:null)),operator:{id:actorId,name:e.operator?.name||person?.name||'未记录'},summary:String(e.summary??e.detail??''),source,sourceAvailable:!!e.id&&!!resolveProjectEventSource(w,e,actor)};
   }
   function queryProjectEvents(w,options={}){
-    const events=(w.events||[]).filter(e=>!e.projectId||e.projectId===w.project.id).map(e=>normalizeProjectEvent(w,e,options.actor));
+    const events=(w.events||[]).filter(e=>(!e.projectId||e.projectId===w.project.id)&&!(w.logDrafts||[]).some(d=>d.id===e.logId)&&!(w.files||[]).some(f=>f.id===e.fileId&&(w.logDrafts||[]).some(d=>d.id===f.logId||f.documentType==='log'&&d.id===f.documentId))).map(e=>normalizeProjectEvent(w,e,options.actor));
     const rows=events.filter(e=>(!options.kind||options.kind===e.kind)&&(!options.memberId||options.memberId===e.operator.id)&&(!options.from||e.date&&e.date>=options.from)&&(!options.to||e.date&&e.date<=options.to));
     const key=e=>e.at||`${e.date||'0000-00-00'}T00:00:00.000Z`;
     rows.sort((a,b)=>key(b).localeCompare(key(a))||String(b.id).localeCompare(String(a.id)));

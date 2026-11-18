@@ -81,3 +81,13 @@ test('同名成员资料按历史 uploadedById 识别上传者',()=>{
   const result=model.filterProjectTimeline(build(workspace).nodes,{kind:'资料',personId:'u-1'});
   assert.deepEqual(result.map(n=>n.key),['meeting:m-1']);
 });
+
+test('主任务成为独立时间线节点，日志和状态事件归入主任务，私有子任务不可见',()=>{
+ const w=fixture();w.tasks=[{id:'t-1',number:'20261117-001',title:'独立任务',description:'完成',acceptance:'验收',ownerId:'u-2',owner:'乙',createdById:'u-1',createdAt:'2026-11-17T04:00:00Z',status:'进行中',submissions:[]}];
+ w.personalSubtasks=[{id:'private-1',taskId:'t-1',ownerId:'u-2',title:'秘密拆分'}];
+ w.logs=[{id:'l-task',title:'任务日志',taskIds:['t-1'],authorId:'u-2',author:'乙',date:'2026-11-17',createdAt:'2026-11-17T05:00:00Z',text:'进展'}];
+ w.events=[{id:'e-task',taskId:'t-1',kind:'任务',title:'开始执行',action:'task-start',actorId:'u-2',at:'2026-11-17T04:30:00Z'},{id:'e-log',logId:'l-task',kind:'工作日志',title:'发布了一条工作日志',action:'log-created',actorId:'u-2',at:'2026-11-17T05:00:00Z'}];
+ const result=model.buildProjectTimeline(w,{userId:'u-1'}),task=result.nodes.find(n=>n.type==='task'&&n.id==='t-1');
+ assert.ok(task);assert.deepEqual(task.logs.map(x=>x.id),['l-task']);assert.deepEqual(task.activities.map(x=>x.id),['e-log','e-task']);
+ assert.equal(JSON.stringify(result).includes('秘密拆分'),false);
+});

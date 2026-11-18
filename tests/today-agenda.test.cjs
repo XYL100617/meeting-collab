@@ -60,3 +60,8 @@ test('详情可折叠，完成和取消状态明确显示，标题和说明转�
   assert.match(cancelled,/天气预警/);
   assert.match(cancelled,/取消原因/);
 });
+
+test('已改派来源的待办显示来源状态且隐藏完成入口',()=>{
+  const html=component.renderTodayAgendaItem({...todo('reassigned','09:00',{projectId:'p-1',taskId:'task-1',sourceInactive:true,sourceInactiveReason:'已改派',sourceStatus:'待处理'}),kind:'todo'},{contextHtml:'主任务：接口开发 · 已改派'});
+  assert.match(html,/已改派/);assert.doesNotMatch(html,/data-action="todo-toggle"/);
+});

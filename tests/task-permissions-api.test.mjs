@@ -166,14 +166,24 @@ test('autosaved log drafts are private, editable, publishable and deletable',asy
  const draftBody={title:'',logType:'任务日志',text:'正在编写的内容',textHtml:'<p>正在编写的内容</p>',date:today(),taskIds:[]};
  const created=await api('/api/logs/drafts','PUT',draftBody,'u2','p2');assert.equal(created.status,200);assert.ok(created.data.id);assert.equal(created.data.draftType,'autosave');
  assert.ok((await api('/api/state','GET',null,'u2','p2')).data.logDrafts.some(d=>d.id===created.data.id));
- assert.equal((await api('/api/state','GET',null,'u3','p2')).data.logDrafts.some(d=>d.id===created.data.id),false);
+ const peerBeforePublish=(await api('/api/state','GET',null,'u1','p2')).data;assert.equal(peerBeforePublish.logDrafts.some(d=>d.id===created.data.id),false);assert.equal(peerBeforePublish.logs.some(l=>l.id===created.data.id),false);
  assert.equal((await api('/api/logs/drafts','PUT',{...draftBody,id:created.data.id,title:'Other user edit'},'u3','p2')).status,404);
  const updated=await api('/api/logs/drafts','PUT',{...draftBody,id:created.data.id,title:'Finished title',logType:'项目日常日志',text:'完成内容'},'u2','p2');assert.equal(updated.status,200);assert.equal(updated.data.id,created.data.id);assert.equal((await api('/api/state','GET',null,'u2','p2')).data.logDrafts.filter(d=>d.id===created.data.id).length,1);
- const published=await api('/api/logs','POST',{draftId:created.data.id,title:'Finished title',logType:'项目日常日志',text:'完成内容',date:today(),taskIds:[]},'u2','p2');assert.equal(published.status,201);assert.equal(published.data.id,created.data.id);assert.equal((await api('/api/state','GET',null,'u2','p2')).data.logDrafts.some(d=>d.id===created.data.id),false);
+ const published=await api('/api/logs','POST',{draftId:created.data.id,title:'Finished title',logType:'项目日常日志',text:'完成内容',date:today(),taskIds:[]},'u2','p2');assert.equal(published.status,201);assert.equal(published.data.id,created.data.id);assert.equal((await api('/api/state','GET',null,'u2','p2')).data.logDrafts.some(d=>d.id===created.data.id),false);assert.ok((await api('/api/state','GET',null,'u1','p2')).data.logs.some(l=>l.id===created.data.id),'已发布日志对项目其他成员可见');const exportResponse=await fetch(`${base}/api/export?kind=log&id=${encodeURIComponent(published.data.id)}&format=docx`,{headers:{cookie:cookies.u1,'X-Project-Id':'p2'}});assert.equal(exportResponse.status,403,'他人可查看已发布日志，但不能导出作者日志');
  const disposable=await api('/api/logs/drafts','PUT',{...draftBody,title:'Delete me'},'u2','p2');assert.equal(disposable.status,200);
  assert.equal((await api('/api/logs/drafts','DELETE',{id:disposable.data.id},'u3','p2')).status,404);
  assert.equal((await api('/api/logs/drafts','DELETE',{id:disposable.data.id},'u2','p2')).status,200);
  assert.equal((await api('/api/state','GET',null,'u2','p2')).data.logDrafts.some(d=>d.id===disposable.data.id),false);
+});
+test('personal log folders and links are private to their owner',async()=>{
+ const task=await api('/api/tasks','POST',taskData('u2'),'u3','p2');assert.equal(task.status,201);
+ const folder=await api('/api/log-folders','POST',{action:'create',taskId:task.data.id,name:'验收记录'},'u2','p2');assert.equal(folder.status,200);assert.equal(folder.data.folders.length,1);
+ const log=await api('/api/logs','POST',{title:'分类日志',logType:'任务日志',text:'已发布内容',date:today(),taskIds:[task.data.id]},'u2','p2');assert.equal(log.status,201);
+ const attached=await api('/api/log-folders','POST',{action:'attach',folderId:folder.data.folders[0].id,logId:log.data.id},'u2','p2');assert.equal(attached.status,200);assert.equal(attached.data.links.length,1);
+ const ownerState=(await api('/api/state','GET',null,'u2','p2')).data,peerState=(await api('/api/state','GET',null,'u1','p2')).data;
+ assert.ok(ownerState.personalLogFolders.some(item=>item.id===folder.data.folders[0].id));assert.ok(ownerState.personalLogFolderLinks.some(item=>item.logId===log.data.id));
+ assert.equal(peerState.personalLogFolders.some(item=>item.id===folder.data.folders[0].id),false);assert.equal(peerState.personalLogFolderLinks.some(item=>item.logId===log.data.id),false);
+ assert.equal((await api('/api/log-folders','POST',{action:'rename',folderId:folder.data.folders[0].id,name:'越权'},'u1','p2')).status,404);
 });
 test('unreferenced log withdrawal makes a private draft',async()=>{
  const log=await api('/api/logs','POST',{title:'Notes',logType:'项目日常日志',text:'Temporary',date:today(),taskIds:[]},'u2','p2');assert.equal(log.status,201);

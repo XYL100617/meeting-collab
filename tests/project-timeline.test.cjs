@@ -21,10 +21,10 @@ test('会议节点关联资料、纪要、分工和通过分工关联的日志',
   assert.deepEqual(node.files.map(f=>f.id),['f-1']);assert.deepEqual(node.assignments.map(a=>a.id),['a-1']);
   assert.deepEqual(node.logs.map(l=>l.id),['l-1']);assert.equal(node.minutes.type,'minutes');
 });
-test('三星文件独立进入概览，无星级会议也保留上下文',()=>{
+test('三星文件独立进入概览，未单独设置星级的会议按默认三星进入时间线',()=>{
   const timeline=build(fixture(),[mark('file','f-1',3)]);
   assert.deepEqual(timeline.highlights.map(n=>n.key),['file:f-1']);
-  assert.equal(timeline.highlights[0].meetingTitle,'早会');assert.equal(timeline.nodes.find(n=>n.id==='m-1').stars,0);
+  assert.equal(timeline.highlights[0].meetingTitle,'早会');assert.equal(timeline.nodes.find(n=>n.id==='m-1').stars,3);
 });
 test('各级星级都可查找且不会改变真实时间顺序',()=>{
   const workspace=fixture(),marks=[mark('meeting','m-1',3),mark('meeting','m-2',1),mark('assignment','a-1',2)];

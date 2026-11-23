@@ -43,7 +43,7 @@ function buildProjectTimeline(workspace,{marks=[],userId='',scope='mine'}={}) {
       const person=people.find(p=>p.id===id),check=records.find(r=>personId(r.personId,r.name)===id);
       return {id,name:person?.name||check?.name||'历史成员',invited:invitations.includes(id),checked:!!check||checkedIds.includes(id),method:check?.method||'历史签到',reason:check?.reason||'',operator:check?.operator||'',...projectTimelineMoment(check?.at)};
     });
-    const moment=projectTimelineMoment(meeting.actualStart,meeting.date,meeting.start),node=decorate('meeting',meeting,meeting.title,'会议',moment,meeting,ids(personId(meeting.hostId,meeting.host),personId(meeting.organizerId,meeting.organizer),attendanceIds));
+    const moment=projectTimelineMoment(meeting.actualStart,meeting.date,meeting.start),node=decorate('meeting',meeting,meeting.title,'会议',moment,meeting,ids(personId(meeting.hostId,meeting.host),personId(meeting.organizerId,meeting.organizer),attendanceIds));if(!markFor('meeting',meeting.id)){const fallbackStars=Number(meeting.timelineStars);node.stars=[1,2,3].includes(fallbackStars)?fallbackStars:3;}
     Object.assign(node,{timeLabel:meeting.actualStart?'实际开始':'计划开始',files:[],assignments:[],logs:[],activities:[],attendance,minutes:null});
     if(String(meeting.summary||'').trim()||String(meeting.summaryHtml||'').includes('<img')){
       node.minutes=decorate('minutes',meeting,`${meeting.title} 会议纪要`,'纪要',projectTimelineMoment(meeting.summaryUpdatedAt,meeting.date),meeting,ids(personId(meeting.summaryUpdatedById,meeting.summaryUpdatedBy),personId(meeting.hostId,meeting.host)));
@@ -73,7 +73,7 @@ function buildProjectTimeline(workspace,{marks=[],userId='',scope='mine'}={}) {
     for(const key of ['files','assignments','logs','activities'])node[key].sort(order);
     node.highlightCount=[node.minutes,...node.files,...node.assignments,...node.logs].filter(t=>t?.stars===3).length;
   }
-  return {nodes:nodes.sort(order),highlights:targets.filter(target=>target.stars===3).sort(order),targetCount:targets.length};
+  return {nodes:nodes.sort(order),highlights:targets.filter(target=>target.stars===3&&(target.type!=='meeting'||target.mark)).sort(order),targetCount:targets.length};
 }
 
 function projectTimelineMatches(record,{kind='全部动态',personId='全部成员',from='',to='',stars='all'}={}){

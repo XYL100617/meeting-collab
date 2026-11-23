@@ -13,7 +13,9 @@ SAFE_ID = re.compile(r"^[A-Za-z0-9_-]{1,100}(?:\.[A-Za-z0-9_-]{1,10})?$")
 
 
 def main():
-    request = json.load(sys.stdin)
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(encoding="utf-8")
+    request = json.loads(sys.stdin.buffer.read().decode("utf-8-sig"))
     if request.get("operation") == "create":
         workspace = request.get("workspace")
         files = request.get("files", [])

@@ -107,7 +107,7 @@ test('leader transfer changes only project roles and preserves historical actors
  assert.equal((await api('/api/state','GET',null,'u3','p1')).data.people.find(person=>person.id==='u3').role,'组员');
 });
 test('meeting management belongs to the project leader or meeting organizer, not the host',async()=>{
- const meeting=await api('/api/meetings','POST',{title:'Organizer meeting',topic:'Role check',date:today(),start:'09:00',end:'10:00',format:'线下',location:'Room',hostId:'u1',attendeeIds:['u1','u2']},'u2','p2');
+ const meeting=await api('/api/meetings','POST',{title:'Organizer meet',topic:'Role check',date:today(),start:'09:00',end:'10:00',format:'线下',location:'Room',hostId:'u1',attendeeIds:['u1','u2']},'u2','p2');
  assert.equal(meeting.status,201,JSON.stringify(meeting));
  assert.equal((await api('/api/meetings/status','PATCH',{id:meeting.data.id,status:'进行中'},'u1','p2')).status,403);
  assert.equal((await api('/api/meetings/material-analysis','POST',{meetingId:meeting.data.id},'u1','p2')).status,403);

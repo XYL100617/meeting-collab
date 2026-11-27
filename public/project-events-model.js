@@ -45,7 +45,7 @@
     return {...e,projectId:e.projectId||w.project.id,at,date:at?day(at):(e.date||(/^\d{4}-\d{2}-\d{2}$/.test(value)?value:null)),operator:{id:actorId,name:e.operator?.name||person?.name||'未记录'},summary:String(e.summary??e.detail??''),source,sourceAvailable:!!e.id&&!!resolveProjectEventSource(w,e,actor)};
   }
   function queryProjectEvents(w,options={}){
-    const events=(w.events||[]).filter(e=>(!e.projectId||e.projectId===w.project.id)&&!(w.logDrafts||[]).some(d=>d.id===e.logId)&&!(w.files||[]).some(f=>f.id===e.fileId&&(w.logDrafts||[]).some(d=>d.id===f.logId||f.documentType==='log'&&d.id===f.documentId))).map(e=>normalizeProjectEvent(w,e,options.actor));
+    const events=(w.events||[]).filter(e=>(!e.projectId||e.projectId===w.project.id)&&!(w.logDrafts||[]).some(d=>d.id===e.logId||e.source?.type==='log'&&e.source.id===d.id||e.targetType==='log'&&e.targetId===d.id)&&!(w.files||[]).some(f=>f.id===e.fileId&&(w.logDrafts||[]).some(d=>d.id===f.logId||f.documentType==='log'&&d.id===f.documentId))).map(e=>normalizeProjectEvent(w,e,options.actor));
     const rows=events.filter(e=>(!options.kind||options.kind===e.kind)&&(!options.memberId||options.memberId===e.operator.id)&&(!options.from||e.date&&e.date>=options.from)&&(!options.to||e.date&&e.date<=options.to));
     const key=e=>e.at||`${e.date||'0000-00-00'}T00:00:00.000Z`;
     rows.sort((a,b)=>key(b).localeCompare(key(a))||String(b.id).localeCompare(String(a.id)));

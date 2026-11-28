@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="/project-timeline.css">
   <link rel="stylesheet" href="/project-snake-timeline.css">
   <link rel="stylesheet" href="/project-events.css">
+  <link rel="stylesheet" href="/date-fields.css">
 </head>
 <body>
   <div class="app-shell">
@@ -32,22 +33,14 @@
         <button class="nav-item" data-view="timeline"><span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M4 18V8M9 18V5M14 18v-7M19 18V3"/><path d="M3 20.5h18"/></svg></span>项目时间线</button>
         <div class="nav-group">
           <div class="nav-parent">
-            <button class="nav-item nav-group-toggle" data-nav-toggle="meeting-detail" data-nav-parent-scope="meeting-detail" aria-expanded="false" aria-controls="nav-panel-meeting-detail"><span class="nav-icon"><svg viewBox="0 0 24 24"><rect x="3.5" y="5.5" width="17" height="15" rx="2"/><path d="M7.5 3.5v4M16.5 3.5v4M3.5 10h17M8 14h3M8 17h7"/></svg></span>会议详情</button>
-            <button class="nav-caret-button" data-nav-toggle="meeting-detail" aria-expanded="false" aria-controls="nav-panel-meeting-detail" aria-label="展开或收起会议详情"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="m5 7.5 5 5 5-5"/></svg></button>
+            <button class="nav-item" data-view="meetings" data-nav-parent-scope="meeting-schedule"><span class="nav-icon"><svg viewBox="0 0 24 24"><rect x="3.5" y="5.5" width="17" height="15" rx="2"/><path d="M7.5 3.5v4M16.5 3.5v4M3.5 10h17M8 14h3M8 17h7"/></svg></span>会议安排<span class="nav-count" id="meeting-count">0</span></button>
+            <button class="nav-caret-button" data-nav-toggle="meeting-schedule" aria-expanded="false" aria-controls="nav-panel-meeting-schedule" aria-label="展开或收起会议安排" hidden><svg viewBox="0 0 20 20" aria-hidden="true"><path d="m5 7.5 5 5 5-5"/></svg></button>
           </div>
-          <div class="sub-nav" id="nav-panel-meeting-detail" data-nav-panel="meeting-detail" hidden>
-            <div class="nav-group">
-              <div class="nav-parent">
-                <button class="nav-item nav-sub" data-view="meetings">会议安排<span class="nav-count" id="meeting-count">0</span></button>
-                <button class="nav-caret-button" data-nav-toggle="meeting-schedule" aria-expanded="false" aria-controls="nav-panel-meeting-schedule" aria-label="展开或收起会议安排"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="m5 7.5 5 5 5-5"/></svg></button>
-              </div>
-              <div class="sub-nav sub-nav-deep" id="nav-panel-meeting-schedule" data-nav-panel="meeting-schedule" hidden>
-                <button class="nav-item nav-sub nav-sub-deep" data-meeting-section="overview">会议概览</button>
-                <button class="nav-item nav-sub nav-sub-deep" data-meeting-section="audio">录音与转写</button>
-                <button class="nav-item nav-sub nav-sub-deep" data-meeting-section="files">会议资料</button>
-                <button class="nav-item nav-sub nav-sub-deep" data-meeting-section="history">历史操作</button>
-              </div>
-            </div>
+          <div class="sub-nav" id="nav-panel-meeting-schedule" data-nav-panel="meeting-schedule" hidden>
+            <button class="nav-item nav-sub" data-meeting-section="overview">会议概览</button>
+            <button class="nav-item nav-sub" data-meeting-section="audio">录音与转写</button>
+            <button class="nav-item nav-sub" data-meeting-section="files">会议资料</button>
+            <button class="nav-item nav-sub" data-meeting-section="history">历史操作</button>
           </div>
         </div>
         <button class="nav-item" data-view="work"><span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11"/><rect x="3.5" y="4.5" width="2.5" height="2.5" rx=".5"/><rect x="3.5" y="10.5" width="2.5" height="2.5" rx=".5"/><rect x="3.5" y="16.5" width="2.5" height="2.5" rx=".5"/></svg></span>工作分工</button>
@@ -64,6 +57,7 @@
     </main>
   </div>
   <div class="toast-region" id="toast-region" aria-live="polite"></div><div class="modal-layer" id="modal-layer" hidden></div><div class="modal-layer app-dialog-layer" id="app-dialog-layer" hidden></div>
+  <script src="/date-fields.js" defer></script>
   <script src="/profile.js" defer></script>
   <script src="/today-agenda.js" defer></script>
   <script src="/personal-history-model.js" defer></script>

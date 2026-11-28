@@ -7,7 +7,7 @@ const vm=require('node:vm');
 test('待办隐藏 id 字段不会遮蔽保存分支使用的表单 id',async()=>{
   const source=fs.readFileSync(path.join(__dirname,'../public/app.js'),'utf8').split('\n').find(line=>line.startsWith('async function submitModal(){'));
   const fields={id:'todo-1',title:'我的安排',date:'2026-11-08',start:'07:00',end:'07:30',stars:'3'};
-  const form={id:{name:'id',value:'todo-1'},getAttribute:name=>name==='id'?'todo-form':null,reportValidity:()=>true,querySelector:()=>null};
+  const form={dataset:{},id:{name:'id',value:'todo-1'},getAttribute:name=>name==='id'?'todo-form':null,reportValidity:()=>true,querySelector:()=>null};
   const calls=[],messages=[];
   const context={
     $:selector=>selector==='.modal form'?form:{disabled:false,textContent:''},
@@ -31,7 +31,7 @@ test('保存个人星级后，延迟返回的旧轮询不会覆盖已保存设�
   const oldItem={id:'todo-1',userId:'u-1',date:'2026-11-08',stars:0,importanceNote:''};
   let savedItem={...oldItem},releaseOld,todoReads=0;
   const oldResponse=new Promise(resolve=>releaseOld=resolve);
-  const form={id:{name:'id'},getAttribute:()=> 'todo-mark-form',reportValidity:()=>true,querySelector:()=>null};
+  const form={dataset:{},id:{name:'id'},getAttribute:()=> 'todo-mark-form',reportValidity:()=>true,querySelector:()=>null};
   const node={disabled:false,textContent:'',classList:{remove(){},add(){}}};
   const context={
     $:selector=>selector==='.modal form'?form:node,

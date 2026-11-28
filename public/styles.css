@@ -2066,3 +2066,20 @@ body{font-size:20px}
 /* Place current and other active project sections side by side */
 .project-groups{display:grid!important;grid-template-columns:repeat(2,minmax(270px,330px));align-items:start;gap:18px;justify-content:start}.project-group{min-width:0}.project-group .projects-grid{grid-template-columns:minmax(0,1fr)!important}.project-card{width:100%;min-width:0}
 @media(max-width:760px){.project-groups{grid-template-columns:minmax(0,1fr)!important}.project-group .projects-grid{grid-template-columns:minmax(0,1fr)!important}}
+
+/* Open the draft editor from the entire empty draft card. */
+button.journal-drafts-empty{width:100%;text-align:left;font:inherit;color:inherit}
+button.journal-drafts-empty:not(:disabled):hover{background:#f1f4ff;border-color:#b9c6ed}
+button.journal-drafts-empty:focus-visible{outline:2px solid #6379ca;outline-offset:3px}
+button.journal-drafts-empty:disabled{cursor:default}
+.journal-drafts-empty>.journal-drafts-empty-copy{display:block;width:auto;height:auto;min-width:0;background:none;border-radius:0;font:inherit;color:inherit}
+.journal-drafts-empty-copy>span{display:block;margin-top:3px;color:#919bad;font-size:15px;line-height:1.5}
+.draft-editor-form .draft-blank-editor{min-height:300px;max-height:50vh;overflow:auto;outline:none;white-space:pre-wrap}
+.draft-blank-editor[data-empty="true"]:before{content:attr(data-placeholder);color:#919bad;pointer-events:none}
+.work-agenda-sidebar .compact-agenda-date{margin:0 0 18px;padding:0;border:0}
+.compact-agenda-footer{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin-top:18px}
+.compact-agenda-footer .compact-agenda-sync{margin:0}
+.compact-agenda-footer .compact-agenda-add{flex-shrink:0;height:44px;padding:0 18px;font-size:17px}
+.task-scope-switch{display:flex;align-items:center;flex-wrap:wrap;gap:8px}
+.task-scope-switch>span{color:#72819a;font-size:16px;margin-right:4px}
+.task-workspace-page .task-filters select:disabled{color:#72819a;background:#f2f4f8;cursor:default}

@@ -67,6 +67,10 @@ try{
   const workspace=(id,leader)=>({project:{id,name:id,topic:'浏览器验收隔离项目',status:'进行中',startDate:'2026-01-01',endDate:'2027-12-31',createdAt:id==='p1'?'2026-01-01T00:00:00.000Z':'2026-01-02T00:00:00.000Z'},people:people.map(p=>({...p,role:p.id===leader?'组长':'组员'})),meetings:[],assignments:[],tasks:[],taskSequences:{},personalSubtasks:[],personalSubtaskHistory:[],logs:[],events:[],files:[],invites:[],focusMarks:[]});
   const overdue={id:'seed-overdue',number:'20250101-001',projectId:'p1',title:'验收逾期筛选样本',description:'历史样本',descriptionHtml:'<p>历史样本</p>',acceptance:'样本标准',ownerId:'u2',owner:'组员乙',priority:'P0',due:'2025-01-01',dueAt:'2025-01-01T12:00:00.000Z',status:'待处理',createdById:'u1',createdBy:'组长甲',createdAt:'2025-01-01T00:00:00.000Z',version:1,submissions:[],history:[]};
   const p1=workspace('p1','u1'),p2=workspace('p2','u3');p1.tasks.push(overdue);
+  if(process.argv.includes('--work-layout-only')){
+    for(const [index,status] of ['待处理','进行中','待验收','已完成','已取消'].entries())p1.tasks.push({...overdue,id:`layout-${index}`,legacyAssignmentId:`legacy-${index}`,number:`历史-${index}`,title:`布局验收${status}`,status});
+    p1.tasks.push({...overdue,id:'layout-mine',legacyAssignmentId:'legacy-mine',number:'历史-本人',title:'本人负责的历史任务',ownerId:'u1',owner:'组长甲',status:'已取消'});
+  }
   await writeFile(path.join(stage,'data','store.json'),JSON.stringify({accounts,workspaces:[p1,p2],todos:[],notifications:[],sessions:[]}));
   const port=await freePort();server=spawn(process.execPath,['server.mjs'],{cwd:stage,env:{PATH:process.env.PATH,SystemRoot:process.env.SystemRoot,WINDIR:process.env.WINDIR,TEMP:temp,TMP:temp,HOST:'127.0.0.1',PORT:String(port)},stdio:['ignore','pipe','pipe']});
   let serverOutput='';server.stdout.on('data',chunk=>serverOutput+=chunk);server.stderr.on('data',chunk=>serverOutput+=chunk);
@@ -80,7 +84,136 @@ try{
   cdp=new WebSocket(target.webSocketDebuggerUrl);await new Promise((resolve,reject)=>{cdp.onopen=resolve;cdp.onerror=reject;cdp.onmessage=event=>{const m=JSON.parse(event.data);if(m.id&&pending.has(m.id)){const p=pending.get(m.id);pending.delete(m.id);m.error?p.reject(Error(m.error.message)):p.resolve(m.result)}else if(m.method==='Page.javascriptDialogOpening')void cdpSend('Page.handleJavaScriptDialog',{accept:true});else if(m.method==='Runtime.exceptionThrown')process.stderr.write(`浏览器异常：${m.params.exceptionDetails.text}\n`)}});
   await cdpSend('Page.enable');await cdpSend('Runtime.enable');await cdpSend('Emulation.setDeviceMetricsOverride',{width:1440,height:1000,deviceScaleFactor:1,mobile:false});await cdpSend('Page.setDownloadBehavior',{behavior:'allow',downloadPath:downloads});await cdpSend('Page.navigate',{url:base});
 
-  await login('leader1');await navigate('journal');
+  await login('leader1');
+  if(process.argv.includes('--navigation-only')){
+    await navigate('meetings');
+    assert.equal(await evaluate('document.querySelector("#page-content h1").textContent'),'会议安排');
+    assert.equal(await evaluate('document.querySelectorAll("#sidebar [data-view=meetings]").length'),1);
+    assert.equal(await evaluate('!!document.querySelector("#sidebar [data-view=meetings]").closest(".sub-nav")'),false,'会议安排为一级导航');
+    assert.equal(await evaluate('!!document.querySelector("#sidebar [data-nav-toggle=meeting-detail]")'),false,'移除外层会议详情');
+    assert.equal(await evaluate('document.querySelectorAll("#nav-panel-meeting-schedule [data-meeting-section]").length'),4,'会议安排保留四个子项');
+    assert.equal(await evaluate('document.querySelector("#nav-panel-meeting-schedule").hidden'),true,'列表页隐藏单场会议子项');
+    const meeting=await pageApi('/api/meetings','POST',{title:'导航验收会议',topic:'核对会议各页面入口',date:'2026-12-15',start:'14:00',end:'15:00',format:'线下',location:'会议室',hostId:'u1',attendeeIds:['u1','u2']});
+    assert.ok(meeting.id,JSON.stringify(meeting));
+    await reloadPage();await navigate('meetings');
+    assert.equal(await evaluate('document.querySelector("#meeting-count").textContent'),'1');
+    await click(`[data-open-meeting="${meeting.id}"]`);
+    await waitFor(()=>evaluate('!document.querySelector("#nav-panel-meeting-schedule").hidden'),'打开会议后展示子项');
+    assert.equal(await evaluate('!!document.querySelector(".meeting-page-tabs")'),false,'子项保留在左侧');
+    for(const section of ['audio','files','history','overview']){
+      await click(`#sidebar [data-meeting-section="${section}"]`);await expectVisible(`[data-meeting-page="${section}"]`);
+      assert.equal(await evaluate(`document.querySelector('#sidebar [data-meeting-section="${section}"]').classList.contains('active')`),true);
+    }
+    await click('[data-nav-toggle="meeting-schedule"]');
+    assert.equal(await evaluate('document.querySelector("#nav-panel-meeting-schedule").hidden'),true,'会议子项可收起');
+    await click('[data-nav-toggle="meeting-schedule"]');
+    assert.equal(await evaluate('document.querySelector("#nav-panel-meeting-schedule").hidden'),false,'会议子项可展开');
+    await click('#sidebar [data-view=meetings]');await expectVisible('.meeting-table-panel');
+    assert.equal(await evaluate('document.querySelector("#nav-panel-meeting-schedule").hidden'),true,'返回列表隐藏单场会议子项');
+    assert.equal(await evaluate('document.querySelector("#sidebar [data-view=meetings]").classList.contains("active")'),true);
+    console.log('PASS: top-level meeting schedule, four sidebar subsections, collapse/expand, count, active state and return to list');
+  }else if(process.argv.includes('--work-layout-only')){
+    await navigate('work');
+    assert.equal(await evaluate('!!document.querySelector(".work-with-agenda .heading-actions [data-action=new-log]")'),false,'工作分工顶部移除写工作日志');
+    assert.equal(await evaluate('document.querySelectorAll(".task-scope-switch [data-action=task-scope]").length'),2,'任务范围使用两个固定选项');
+    assert.equal(await evaluate('document.querySelector("[data-task-scope=all]").getAttribute("aria-pressed")'),'true');
+    await setValue('#task-status-filter','已取消');
+    await click('[data-task-scope="mine"]');
+    assert.equal(await evaluate('document.querySelector("[data-task-scope=mine]").getAttribute("aria-pressed")'),'true');
+    assert.equal(await evaluate('document.querySelector("[data-task-scope=mine]").textContent'),'我负责的任务');
+    assert.equal(await evaluate('document.querySelector("#task-owner-filter").disabled'),true,'本人范围不能混选其他负责人');
+    assert.equal(await evaluate('document.querySelector("#task-owner-filter").value'),'u1');
+    await click('[data-action="show-task-history"]');await expectVisible('#modal-layer .work-card');
+    assert.deepEqual(await evaluate('[...document.querySelectorAll("#modal-layer [data-task]")].map(e=>e.dataset.task)'),['layout-mine'],'本人范围只显示本人任务');
+    await click('.modal-close');await waitFor(()=>evaluate('!document.querySelector("#modal-layer .modal")'),'关闭本人任务');
+    await click('[data-task-scope="all"]');
+    assert.equal(await evaluate('document.querySelector("[data-task-scope=all]").textContent'),'全部成员任务');
+    assert.equal(await evaluate('document.querySelector("#task-owner-filter").disabled'),false);
+    assert.equal(await evaluate('document.querySelector("#task-status-filter").value'),'已取消','切换范围保留状态筛选');
+    await click('[data-action="show-task-history"]');await expectVisible('#modal-layer .work-card');
+    assert.deepEqual((await evaluate('[...document.querySelectorAll("#modal-layer [data-task]")].map(e=>e.dataset.task)')).sort(),['layout-4','layout-mine'],'全部成员范围包含双方任务');
+    await click('.modal-close');await waitFor(()=>evaluate('!document.querySelector("#modal-layer .modal")'),'关闭全部成员任务');
+    for(const status of ['全部状态','待处理','进行中','待验收','已完成','已取消']){
+      await setValue('#task-status-filter',status);
+      const label=status==='全部状态'?'查看全部任务':`查看${status}任务`;
+      assert.ok((await evaluate('document.querySelector("[data-action=show-task-history]").textContent')).startsWith(label));
+      await click('[data-action="show-task-history"]');await expectVisible('#modal-layer .work-card');
+      assert.equal(await evaluate('document.querySelector(".modal-head h2").textContent'),status==='全部状态'?'历史任务':`${status}任务`);
+      await click('.modal-close');await waitFor(()=>evaluate('!document.querySelector("#modal-layer .modal")'),'关闭任务列表');
+    }
+    for(const width of [1823,1100,390]){
+      await cdpSend('Emulation.setDeviceMetricsOverride',{width,height:1000,deviceScaleFactor:1,mobile:false});
+      const layout=await evaluate(`(()=>{const box=document.querySelector('.work-agenda-sidebar'),date=box.querySelector('.compact-agenda-date'),add=box.querySelector('[data-action="new-todo"]'),rect=box.getBoundingClientRect(),dr=date.getBoundingClientRect(),ar=add.getBoundingClientRect();return{header:!!box.querySelector('.compact-agenda-head'),dateFirst:box.firstElementChild===date,label:!!date.querySelector('label>span:not(.date-field)'),addText:add.textContent,addHeight:ar.height,addRight:ar.right,boxRight:rect.right,addTop:ar.top,settingsBottom:box.querySelector('.compact-agenda-settings').getBoundingClientRect().bottom,dateTop:dr.top,boxTop:rect.top}})()`);
+      assert.equal(layout.header,false);assert.equal(layout.dateFirst,true);assert.equal(layout.label,false);
+      assert.ok(layout.addText.includes('添加待办'));assert.ok(layout.addHeight>=44);
+      assert.ok(layout.boxRight-layout.addRight<25);assert.ok(layout.addTop>=layout.settingsBottom);
+      assert.ok(layout.dateTop-layout.boxTop<25);
+    }
+    const before=await evaluate('document.querySelector("#todo-date").value');
+    await click('.work-agenda-sidebar [data-action="todo-day-next"]');
+    await waitFor(()=>evaluate(`document.querySelector('#todo-date').value!==${JSON.stringify(before)}`),'日期切换正常');
+    await click('.work-agenda-sidebar [data-action="todo-day-prev"]');
+    await waitFor(()=>evaluate(`document.querySelector('#todo-date').value===${JSON.stringify(before)}`),'日期切回');
+    await click('.work-agenda-sidebar [data-action="new-todo"]');await expectVisible('#todo-form');
+    await setValue('#todo-form [name=title]','布局验收新增待办');await click('[data-action="submit-modal"]');
+    await waitFor(()=>evaluate('!document.querySelector("#todo-form")'),'待办创建成功');
+    console.log('PASS: status-specific task labels and dialogs, date at top, no duplicate heading/date, larger bottom-right add button, date navigation and todo creation');
+  }else{
+  await navigate('journal');
+  assert.equal(await evaluate('!!document.querySelector(".journal-drafts-heading [data-action=new-log]")'),false,'草稿标题栏不显示新建草稿按钮');
+  assert.equal(await evaluate('document.querySelector(".journal-drafts-empty")?.tagName'),'BUTTON','整个长方形草稿区域可点击并支持键盘');
+  assert.equal(await evaluate('document.querySelector(".journal-drafts-empty").getBoundingClientRect().width>=document.querySelector(".journal-drafts").clientWidth-50'),true,'点击区域覆盖整行');
+  await click('.journal-drafts-empty');await expectVisible('#log-form');
+  assert.equal(await evaluate('document.querySelector(".modal-head h2").textContent'),'编辑草稿');
+  assert.equal(await evaluate('!!document.querySelector("#modal-layer .form-foot")'),false,'自动保存草稿不显示底部按钮');
+  assert.equal(await evaluate('!!document.querySelector("#log-form .rich-toolbar,#log-form input[type=file],#log-form select,#log-form input[type=date]")'),false,'草稿是独立的简洁编辑界面');
+  assert.equal(await evaluate('document.querySelector("#log-form [data-rich-editor=log]").innerText'),'','新草稿正文为空白');
+  const placeholderVisible=()=>evaluate(`!['none','normal','""'].includes(getComputedStyle(document.querySelector('.draft-blank-editor'),'::before').content)`);
+  assert.equal(await placeholderVisible(),true,'空草稿显示输入提示');
+  await setHtml('#log-form [data-rich-editor="log"]','111111<p></p>');
+  assert.equal(await placeholderVisible(),false,'有文本和空段落时提示消失');
+  await setHtml('#log-form [data-rich-editor="log"]','<p><br></p>');
+  assert.equal(await placeholderVisible(),true,'删除全部内容后提示重新出现');
+  await cdpSend('Input.insertText',{text:'实际输入的草稿'});
+  assert.equal(await placeholderVisible(),false,'键盘输入后提示立即消失');
+  await setValue('#log-form [name=title]','浏览器验收-草稿直接编辑');await setHtml('#log-form [data-rich-editor="log"]','<p>关闭后立即可继续编辑。</p>');
+  await waitFor(async()=>((await pageApi('/api/state')).logDrafts||[]).some(d=>d.title==='浏览器验收-草稿直接编辑'&&d.text.includes('关闭后立即可继续编辑')),'编辑时自动保存');
+  assert.equal(await evaluate('!!document.querySelector("#log-form")'),true,'自动保存后继续留在编辑器');
+  await click('.modal-close');
+  await waitFor(()=>evaluate('!document.querySelector("#log-form")'),'保存并关闭草稿');
+  const directDraft=(await pageApi('/api/state')).logDrafts.find(d=>d.title==='浏览器验收-草稿直接编辑');assert.ok(directDraft);
+  assert.equal(await evaluate(`!!document.querySelector('[data-log-draft-edit="${directDraft.id}"]')`),true,'关闭编辑器后草稿立即显示，无需重新导航');
+  await click(`[data-log-draft-edit="${directDraft.id}"]`);await expectVisible('#log-form');
+  assert.equal(await evaluate('document.querySelector("#log-form [name=title]").value'),'浏览器验收-草稿直接编辑');
+  await setValue('#log-form [name=title]','浏览器验收-草稿修改已保存');await setHtml('#log-form [data-rich-editor="log"]','<p>继续编辑后的正文。</p>');
+  await click('.modal-close');await waitFor(()=>evaluate('!document.querySelector("#log-form")'),'直接关闭时保存最新修改');
+  assert.equal(await evaluate('!!document.querySelector(".compact-confirm")'),false,'关闭自动保存草稿无需确认');
+  const editedDraft=(await pageApi('/api/state')).logDrafts.find(d=>d.id===directDraft.id);assert.equal(editedDraft.title,'浏览器验收-草稿修改已保存');assert.ok(editedDraft.text.includes('继续编辑后的正文'));
+  assert.equal((await pageApi('/api/state')).logs.some(log=>log.id===directDraft.id),false,'保存草稿不会发布为日志');
+  await reloadPage();await navigate('journal');await click(`[data-log-draft-edit="${directDraft.id}"]`);await expectVisible('#log-form');
+  assert.equal(await evaluate('document.querySelector("#log-form [name=title]").value'),'浏览器验收-草稿修改已保存','刷新后可继续编辑同一草稿');
+  await click('.modal-close');await waitFor(()=>evaluate('!document.querySelector("#log-form")'),'关闭未修改草稿');
+  await click(`[data-log-delete-draft="${directDraft.id}"]`);await expectVisible('.compact-confirm');await click('[data-action="app-dialog-accept"]');await waitFor(async()=>!(await pageApi('/api/state')).logDrafts.some(d=>d.id===directDraft.id),'删除草稿验收样本');
+  await expectVisible('.journal-drafts-empty');await click('.journal-drafts-empty');await expectVisible('#log-form');
+  await setHtml('#log-form [data-rich-editor="log"]','<p>没有标题也可以保存草稿。</p>');
+  await click('.modal-close');await waitFor(()=>evaluate('!document.querySelector("#log-form")'),'无标题正文自动保存');
+  const bodyOnlyDraft=(await pageApi('/api/state')).logDrafts.find(d=>d.text.includes('没有标题也可以保存草稿'));
+  assert.ok(bodyOnlyDraft);assert.equal(bodyOnlyDraft.title,'');
+  await click(`[data-log-draft-edit="${bodyOnlyDraft.id}"]`);await expectVisible('#log-form');
+  assert.equal(await evaluate('!!document.querySelector("#modal-layer .form-foot")'),false,'继续编辑也不显示底部按钮');
+  assert.ok((await evaluate('document.querySelector("#log-form [data-rich-editor=log]").innerText')).includes('没有标题也可以保存草稿'));
+  await setHtml('#log-form [data-rich-editor="log"]','');
+  await click('.modal-close');await waitFor(()=>evaluate('!document.querySelector("#log-form")'),'关闭草稿');
+  assert.equal((await pageApi('/api/state')).logDrafts.find(d=>d.id===bodyOnlyDraft.id).text,'','已有草稿清空正文后也应自动保存');
+  await click(`[data-log-draft-edit="${bodyOnlyDraft.id}"]`);await expectVisible('#log-form');
+  assert.equal(await evaluate('document.querySelector("#log-form [data-rich-editor=log]").innerText.trim()'),'','重新打开保留清空结果');
+  await click('.modal-close');await waitFor(()=>evaluate('!document.querySelector("#log-form")'),'关闭已清空草稿');
+  await click(`[data-log-delete-draft="${bodyOnlyDraft.id}"]`);await expectVisible('.compact-confirm');await click('[data-action="app-dialog-accept"]');await waitFor(async()=>!(await pageApi('/api/state')).logDrafts.some(d=>d.id===bodyOnlyDraft.id),'删除无标题草稿样本');
+  assert.equal((await pageApi('/api/state')).logs.length,0,'所有保存操作均未发布日志');
+  await expectVisible('.journal-drafts-empty');await click('[data-action="new-log"]');await expectVisible('#log-form');
+  assert.equal(await evaluate('document.querySelector("[data-action=submit-modal]").textContent'),'发布日志','写日志入口保留发布界面');
+  await click('.modal-close');await waitFor(()=>evaluate('!document.querySelector("#log-form")'),'关闭写日志界面');
+  if(process.argv.includes('--drafts-only')){console.log('PASS: blank draft editor, optional title, save without publishing, reopen, refresh persistence, unchanged log publishing entry');}else{
    const emptyDraftView=await evaluate(`(()=>{const box=document.querySelector('.journal-drafts'),empty=box?.querySelector('.journal-drafts-empty'),heading=box?.querySelector('.journal-drafts-heading h2');if(!box||!empty||!heading)return null;const style=getComputedStyle(box),emptyStyle=getComputedStyle(empty),headingStyle=getComputedStyle(heading);return{text:box.innerText,padding:parseFloat(style.paddingTop),radius:parseFloat(style.borderTopLeftRadius),emptyPadding:parseFloat(emptyStyle.paddingTop),headingSize:parseFloat(headingStyle.fontSize)}})()`);assert.ok(emptyDraftView,'日志页应显示我的草稿卡片和空状态');assert.ok(emptyDraftView.text.includes('我的草稿')&&emptyDraftView.text.includes('暂无草稿'),'空草稿中文文案正常');assert.ok(emptyDraftView.padding>=15&&emptyDraftView.radius>=8&&emptyDraftView.emptyPadding>=10&&emptyDraftView.headingSize>=14,'草稿卡片应具备正常间距、边框和标题样式');await navigate('work');
   // Required-field validation is enforced in the real browser form.
   await click('[data-action="new-task"]');await expectVisible('#task-create-form');await click('[data-action="submit-modal"]');
@@ -154,9 +287,11 @@ try{
   await navigate('members');await click('[data-member-remove="u1"]');await expectVisible('[data-action="app-dialog-accept"]');await click('[data-action="app-dialog-accept"]');await waitFor(()=>evaluate('[...document.querySelectorAll(".toast.error")].some(x=>x.textContent.includes("请先改派或取消"))'),'移除成员的活动任务阻断提示');assert.ok((await pageApi('/api/state','GET',null,'p2')).people.some(p=>p.id==='u1'),'有未结束任务时成员保留在项目内');
   await navigate('work');await click(`[data-task="${archiveBlocker.id}"] [data-task-action="cancel"]`);await expectVisible('#task-action-form');await setValue('#task-action-form [name=reason]','归档与移除成员验收清理');await click('[data-action="submit-modal"]');await waitFor(()=>evaluate('!document.querySelector("#task-action-form")'),'取消归档阻塞任务');await navigate('members');await click('[data-member-remove="u1"]');await expectVisible('[data-action="app-dialog-accept"]');await click('[data-action="app-dialog-accept"]');await waitFor(async()=>!(await pageApi('/api/state','GET',null,'p2')).people.some(p=>p.id==='u1'),'移除成员完成');await loginAs('leader1');const removedAccess=await evaluate(`fetch('/api/state',{headers:{'X-Project-Id':'p2'}}).then(r=>r.status)`);assert.equal(removedAccess,403,'移出项目后旧成员不能再读取项目');await loginAs('worker2');await selectProject('p2');await navigate('projects');await click('[data-project-select="p2"]');await waitFor(()=>evaluate(`document.querySelector('[data-action="archive-selected-project"]')?.disabled===false`),'项目归档按钮可用');await click('[data-action="archive-selected-project"]');await expectVisible('[data-action="app-dialog-accept"]');await click('[data-action="app-dialog-accept"]');await waitFor(async()=>{const s=await pageApi('/api/state','GET',null,'p2');return s.project.status==='已归档'},'归档成功');await navigate('work');assert.equal(await evaluate('!!document.querySelector("[data-action=new-task]")'),false,'归档后界面关闭任务创建入口');assert.equal(await evaluate(`!!document.querySelector('[data-task="${archiveBlocker.id}"] [data-task-action]')`),false,'归档后不提供任务操作入口');
   console.log(JSON.stringify({result:'PASS',browser:'Chrome headless (CDP mouse clicks)',scenarios:['AC-01 cross-project role isolation and leader transfer with historical actors preserved','AC-02 required browser form validation, assignment and task attachment success/failure','AC-05/21/22/23 transition, return, withdraw, reopen, cancel and restore','AC-07/08 submission with none/incomplete subtasks','AC-09/10/11 private subtask create, edit, delete, reorder and state boundary','AC-12/13 reassignment and private split boundary','AC-14/15 multi-task log links shown bidirectionally once','AC-16 local draft reload/account isolation, task checkbox toggle, server autosave/delete, styled cards and unified confirmation','AC-19 DOCX metadata, rich text and embedded image','AC-24 search/filters/sorting/overdue','AC-25 public timeline excludes private subtasks','AC-26 active-task archive block and archived read-only UI','AC-27 active task blocks member removal; removed member loses project access'],docx:{bytes:docx.length,pythonDocx:'opened',images:1,bold:true}},null,2));
+  }
+  }
 }catch(error){console.error(error.stack||error);console.error('E2E_SERVER_OUTPUT',server?server.stdout.read()?.toString()||'':'');process.exitCode=1}
 finally{
-  if(cdp)try{cdp.close()}catch{}
+  if(cdp){try{await cdpSend('Browser.close')}catch{}try{cdp.close()}catch{}}
   for(const child of [chrome,server])if(child&&child.exitCode===null){child.kill();await new Promise(resolve=>child.once('exit',resolve))}
   const resolved=path.resolve(temp);if(resolved.startsWith(path.resolve(os.tmpdir())+path.sep)){for(let attempt=0;attempt<5;attempt++){try{await rm(resolved,{recursive:true,force:true});break}catch(error){if(error.code!=='EBUSY'||attempt===4)throw error;await sleep(500)}}}
 }

@@ -1,0 +1,20 @@
+.date-field{position:relative;display:inline-flex;align-items:center;flex-shrink:0;width:210px;min-width:210px;max-width:100%;font-size:17px}
+.date-field-datetime{width:290px;min-width:min(290px,100%)}
+.field .date-field{width:100%}
+.date-field input.date-field-text{box-sizing:border-box;width:100%;min-width:0;max-width:none;height:40px;padding:0 44px 0 12px;border:1px solid #e1e6f0;border-radius:10px;background:#fbfcff;color:#475672;font:inherit;line-height:normal;outline:none}
+.date-field input.date-field-text::placeholder{color:#748198;opacity:1}
+.date-field input.date-field-text:focus{border-color:#b8c6f8;box-shadow:0 0 0 3px #3158d912}
+.date-field input.date-field-text:disabled{background:#f2f4f8;color:#8993a5}
+.date-field input.date-field-native{position:absolute!important;inset:0;width:100%!important;min-width:0!important;max-width:100%!important;height:100%!important;margin:0;padding:0!important;opacity:0;pointer-events:none}
+.date-field .date-field-picker{position:absolute;right:4px;top:4px;bottom:4px;display:grid;place-items:center;width:34px;min-height:0;height:auto;padding:6px;border:0;border-radius:7px;background:transparent;color:#475672;cursor:pointer}
+.date-field .date-field-picker:hover{background:#eaf0ff}
+.date-field .date-field-picker:focus-visible{outline:2px solid #8192dc;outline-offset:1px}
+.date-field .date-field-picker:disabled{opacity:.45;cursor:default}
+.date-field-picker svg{width:20px;height:20px}
+.meeting-date-filter .date-field{flex:0 0 210px}
+.history-filter-bar label{flex-wrap:wrap}
+@media(max-width:600px){
+  .meeting-date-filter,.journal-filters .meeting-date-filter,.meeting-filters .meeting-date-filter{flex-basis:100%;flex-wrap:wrap}
+  .meeting-date-filter .date-field{flex:1 0 210px}
+  .project-events-filters{grid-template-columns:minmax(0,1fr)}
+}

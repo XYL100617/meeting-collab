@@ -44,11 +44,10 @@ test('旧分工不再接受新日志关联，主任务日志保留版本和事�
   const changed=await api('/api/logs','PATCH',{...content,id:created.data.id,version:1,text:'日志更新'});assert.equal(changed.status,200);assert.equal(changed.data.version,2);
   assert.equal((await api('/api/state')).data.events.filter(e=>e.logId===created.data.id).length,2);
 });
-test('合并保留归档阻塞、操作人时间及归档后个人设置例外',async()=>{
-  const blocked=await api('/api/project/archive','POST',{},'p-archive');assert.equal(blocked.status,409);assert.equal(blocked.data.meetings[0].id,'m-3');
-  const cancelled=await api('/api/meetings/status','PATCH',{id:'m-3',status:'已取消',reason:'归档校验'},'p-archive');assert.equal(cancelled.status,200);assert.ok(cancelled.data.cancelledAt);
+test('归档只受未结束主任务阻止，保留操作人时间及归档后个人设置例外',async()=>{
   const archived=await api('/api/project/archive','POST',{},'p-archive');assert.equal(archived.status,200);assert.equal(archived.data.archivedById,'u-1');assert.ok(archived.data.archivedAt);
-  const state=(await api('/api/state','GET',undefined,'p-archive')).data;assert.equal(state.events.find(e=>e.action==='meeting-status').at,cancelled.data.cancelledAt);assert.equal(state.events.find(e=>e.action==='project-archived').at,archived.data.archivedAt);
+  const state=(await api('/api/state','GET',undefined,'p-archive')).data;assert.equal(state.meetings.find(m=>m.id==='m-3').status,'待召开','未结束会议不阻止项目归档');assert.equal(state.events.some(e=>e.action==='meeting-status'),false);assert.equal(state.events.find(e=>e.action==='project-archived').at,archived.data.archivedAt);
+  assert.equal((await api('/api/meetings/status','PATCH',{id:'m-3',status:'已取消',reason:'归档后不可操作'},'p-archive')).status,409);
   assert.equal((await api('/api/files/analyze','POST',{fileId:'none'},'p-archive')).status,409);
   assert.equal((await api('/api/focus-marks','POST',{targetType:'meeting',targetId:'m-3',scope:'personal',stars:2},'p-archive')).status,200);
   assert.equal((await api('/api/focus-marks','POST',{targetType:'meeting',targetId:'m-3',scope:'team',stars:2},'p-archive')).status,409);

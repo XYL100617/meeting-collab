@@ -1,9 +1,9 @@
 import {test,before,after} from 'node:test';
 import assert from 'node:assert/strict';
-import {mkdtemp,mkdir,copyFile,writeFile,rm} from 'node:fs/promises';
+import {mkdtemp,mkdir,copyFile,writeFile,readFile,readdir,rename,rm} from 'node:fs/promises';
 import {spawn,spawnSync} from 'node:child_process';
 import {createServer} from 'node:net';
-import {scryptSync} from 'node:crypto';
+import {randomBytes,scryptSync} from 'node:crypto';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
@@ -25,6 +25,49 @@ before(async()=>{
 });
 after(async()=>{if(child&&child.exitCode===null){const ended=new Promise(r=>child.once('exit',r));child.kill();await ended}if(dir)await rm(dir,{recursive:true,force:true})});
 async function api(route,method='GET',data,user='u1',project='p1'){const response=await fetch(base+route,{method,headers:{cookie:cookies[user],'content-type':'application/json','X-Project-Id':project},...(data?{body:JSON.stringify(data)}:{})});return {status:response.status,data:await response.json()}}
+async function uploadEditorImage(user='u2',project='p2'){const form=new FormData();form.append('file',new Blob([Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/Fh8AAAAASUVORK5CYII=','base64')],{type:'image/png'}),'private-draft.png');form.append('kind','log');form.append('recordId','');const response=await fetch(base+'/api/editor-images',{method:'POST',headers:{cookie:cookies[user],'X-Project-Id':project},body:form});return {status:response.status,data:await response.json()}}
+test('failed project backup restore leaves existing attachments and database intact',async()=>{
+ const task=await api('/api/tasks','POST',taskData('u1'),'u1','p1');assert.equal(task.status,201);
+ const form=new FormData();form.append('file',new Blob(['backup version'],{type:'text/plain'}),'restore-check.txt');form.append('taskId',task.data.id);form.append('taskArtifact','yes');
+ const upload=await fetch(base+'/api/files',{method:'POST',headers:{cookie:cookies.u1,'X-Project-Id':'p1'},body:form});assert.equal(upload.status,201);const file=await upload.json();
+ const backupResponse=await fetch(base+'/api/backup',{headers:{cookie:cookies.u1,'X-Project-Id':'p1'}});assert.equal(backupResponse.status,200);const archive=Buffer.from(await backupResponse.arrayBuffer()).toString('base64');
+ const uploadDir=path.join(dir,'data','uploads'),liveBytes=Buffer.from('current live version');await writeFile(path.join(uploadDir,file.storage),liveBytes);const beforeFiles=await readdir(uploadDir),storeFile=path.join(dir,'data','store.json'),storeBackup=path.join(dir,'data','store.json.test-backup');
+ await rename(storeFile,storeBackup);await mkdir(storeFile);
+ try{
+  const response=await fetch(base+'/api/backup/restore',{method:'POST',headers:{cookie:cookies.u1,'X-Project-Id':'p1','content-type':'application/json'},body:JSON.stringify({archive})});assert.equal(response.status,500);
+  assert.deepEqual(await readFile(path.join(uploadDir,file.storage)),liveBytes,'a failed restore must not overwrite the live attachment');
+  assert.deepEqual((await readdir(uploadDir)).sort(),beforeFiles.sort(),'failed restore must remove staged attachment files');
+  const state=await api('/api/state','GET',null,'u1','p1');assert.ok(state.data.tasks.some(item=>item.id===task.data.id),'failed restore must restore in-memory state');
+ }finally{await rm(storeFile,{recursive:true,force:true});await rename(storeBackup,storeFile)}
+ assert.equal((await api('/api/tasks/action','POST',{id:task.data.id,version:1,action:'cancel',reason:'Backup restore regression cleanup'},'u1','p1')).status,200);
+});
+test('successful project backup restore uses staged files and removes replaced storage',async()=>{
+ const task=await api('/api/tasks','POST',taskData('u1'),'u1','p1');assert.equal(task.status,201);
+ const form=new FormData();form.append('file',new Blob(['backup attachment bytes'],{type:'text/plain'}),'restore-success.txt');form.append('taskId',task.data.id);form.append('taskArtifact','yes');
+ const upload=await fetch(base+'/api/files',{method:'POST',headers:{cookie:cookies.u1,'X-Project-Id':'p1'},body:form});assert.equal(upload.status,201);const originalFile=await upload.json();
+ const backupResponse=await fetch(base+'/api/backup',{headers:{cookie:cookies.u1,'X-Project-Id':'p1'}});assert.equal(backupResponse.status,200);const archive=Buffer.from(await backupResponse.arrayBuffer()).toString('base64');
+ const storeFile=path.join(dir,'data','store.json'),storedBefore=JSON.parse(await readFile(storeFile,'utf8')),originalStorage=storedBefore.workspaces.find(item=>item.project.id==='p1').files.find(item=>item.id===originalFile.id).storage;await writeFile(path.join(dir,'data','uploads',originalStorage),Buffer.from('live attachment bytes'));
+ assert.equal((await api('/api/project','PATCH',{name:'Changed after backup',topic:'changed',startDate:'2026-01-01',endDate:''},'u1','p1')).status,200);
+ const restored=await fetch(base+'/api/backup/restore',{method:'POST',headers:{cookie:cookies.u1,'X-Project-Id':'p1','content-type':'application/json'},body:JSON.stringify({archive})});assert.equal(restored.status,200);
+ const state=(await api('/api/state','GET',null,'u1','p1')).data;assert.equal(state.project.name,'p1');const restoredFile=state.files.find(item=>item.id===originalFile.id);assert.ok(restoredFile);const storedAfter=JSON.parse(await readFile(storeFile,'utf8')),restoredStorage=storedAfter.workspaces.find(item=>item.project.id==='p1').files.find(item=>item.id===originalFile.id).storage;assert.notEqual(restoredStorage,originalStorage,'restored file must use a staged storage key');
+ assert.deepEqual(await readFile(path.join(dir,'data','uploads',restoredStorage)),Buffer.from('backup attachment bytes'));
+ await assert.rejects(readFile(path.join(dir,'data','uploads',originalStorage)),{code:'ENOENT'},'replaced old storage should be deleted only after commit');
+ assert.equal((await api('/api/tasks/action','POST',{id:task.data.id,version:1,action:'cancel',reason:'Backup restore regression cleanup'},'u1','p1')).status,200);
+});
+test('backup restores an attachment at the configured 20 MiB upload limit byte-for-byte',async()=>{
+ const task=await api('/api/tasks','POST',taskData('u1'),'u1','p1');assert.equal(task.status,201);const bytes=randomBytes(20*1024*1024);
+ const form=new FormData();form.append('file',new Blob([bytes],{type:'text/plain'}),'maximum-size-check.txt');form.append('taskId',task.data.id);form.append('taskArtifact','yes');
+ try{
+  const upload=await fetch(base+'/api/files',{method:'POST',headers:{cookie:cookies.u1,'X-Project-Id':'p1'},body:form});assert.equal(upload.status,201);
+  const backup=await fetch(base+'/api/backup',{headers:{cookie:cookies.u1,'X-Project-Id':'p1'}});assert.equal(backup.status,200);const archive=Buffer.from(await backup.arrayBuffer()).toString('base64');
+  const restore=await fetch(base+'/api/backup/restore',{method:'POST',headers:{cookie:cookies.u1,'X-Project-Id':'p1','content-type':'application/json'},body:JSON.stringify({archive})});assert.equal(restore.status,200);
+  const state=(await api('/api/state','GET',null,'u1','p1')).data,file=state.files.find(item=>item.name==='maximum-size-check.txt');assert.ok(file);
+  const download=await fetch(base+`/api/files/download?id=${encodeURIComponent(file.id)}&projectId=p1`,{headers:{cookie:cookies.u1}});assert.equal(download.status,200);assert.deepEqual(Buffer.from(await download.arrayBuffer()),bytes);
+ }finally{
+  const state=(await api('/api/state','GET',null,'u1','p1')).data,active=state.tasks.find(item=>item.id===task.data.id&&['待处理','进行中','待验收'].includes(item.status));
+  if(active)await api('/api/tasks/action','POST',{id:active.id,version:active.version,action:'cancel',reason:'Backup size regression cleanup'},'u1','p1');
+ }
+});
 const taskData=(ownerId='u2')=>({title:'Implement feature',description:'Deliver result',acceptance:'Working result',ownerId,priority:'P1',dueAt:due()});
 test('task permissions, private subtasks, logs, submissions and archive',async()=>{
  assert.equal((await api('/api/tasks','POST',taskData(),'u2')).status,403);
@@ -32,7 +75,7 @@ test('task permissions, private subtasks, logs, submissions and archive',async()
  assert.equal((await api('/api/tasks','POST',{...taskData(),title:'任'.repeat(101)})).status,400);
  assert.equal((await api('/api/tasks','POST',{...taskData(),dueAt:'2027-02-31T12:00'})).status,400);
  const defaultPriorityData=taskData();delete defaultPriorityData.priority;const defaultPriority=await api('/api/tasks','POST',defaultPriorityData);assert.equal(defaultPriority.status,201);assert.equal(defaultPriority.data.priority,'P1');assert.equal((await api('/api/tasks/action','POST',{id:defaultPriority.data.id,version:1,action:'cancel',reason:'Validation cleanup'})).status,200);assert.equal((await api('/api/tasks/action','POST',{id:defaultPriority.data.id,version:2,action:'restore',reason:'恢复后继续验证'})).status,200);assert.equal((await api('/api/tasks/action','POST',{id:defaultPriority.data.id,version:3,action:'cancel',reason:'Validation cleanup'})).status,200);
- const created=await api('/api/tasks','POST',{...taskData(),meetingId:'must-not-be-linked',status:'已完成'});assert.equal(created.status,201,JSON.stringify(created));const id=created.data.id;
+ const created=await api('/api/tasks','POST',{...taskData(),meetingId:'must-not-be-linked',status:'已完成'});assert.equal(created.status,201,JSON.stringify(created));const id=created.data.id;assert.equal((await api('/api/project/archive','POST',{},'u1')).status,409,'未结束主任务阻止归档');
  assert.equal(created.data.status,'待处理');assert.equal(created.data.priority,'P1');assert.equal(created.data.projectId,'p1');assert.equal(created.data.createdById,'u1');assert.ok(created.data.createdAt);assert.equal(created.data.history[0].action,'create');assert.equal(created.data.history[0].byId,'u1');assert.equal(created.data.history[0].afterValues.ownerId,'u2');assert.equal(created.data.history[0].beforeValues,null);assert.ok(created.data.history[0].reason);
  assert.equal('meetingId' in created.data,false);assert.ok((await api('/api/state','GET',null,'u2')).data.tasks.some(task=>task.id===id));
  assert.equal((await api('/api/tasks/action','POST',{id,version:1,action:'accept'},'u2')).status,403);
@@ -169,13 +212,42 @@ test('autosaved log drafts are private, editable, publishable and deletable',asy
  const peerBeforePublish=(await api('/api/state','GET',null,'u1','p2')).data;assert.equal(peerBeforePublish.logDrafts.some(d=>d.id===created.data.id),false);assert.equal(peerBeforePublish.logs.some(l=>l.id===created.data.id),false);
  assert.equal((await api('/api/logs/drafts','PUT',{...draftBody,id:created.data.id,title:'Other user edit'},'u3','p2')).status,404);
  const updated=await api('/api/logs/drafts','PUT',{...draftBody,id:created.data.id,title:'Finished title',logType:'项目日常日志',text:'完成内容'},'u2','p2');assert.equal(updated.status,200);assert.equal(updated.data.id,created.data.id);assert.equal((await api('/api/state','GET',null,'u2','p2')).data.logDrafts.filter(d=>d.id===created.data.id).length,1);
- const published=await api('/api/logs','POST',{draftId:created.data.id,title:'Finished title',logType:'项目日常日志',text:'完成内容',date:today(),taskIds:[]},'u2','p2');assert.equal(published.status,201);assert.equal(published.data.id,created.data.id);assert.equal((await api('/api/state','GET',null,'u2','p2')).data.logDrafts.some(d=>d.id===created.data.id),false);assert.ok((await api('/api/state','GET',null,'u1','p2')).data.logs.some(l=>l.id===created.data.id),'已发布日志对项目其他成员可见');const exportResponse=await fetch(`${base}/api/export?kind=log&id=${encodeURIComponent(published.data.id)}&format=docx`,{headers:{cookie:cookies.u1,'X-Project-Id':'p2'}});assert.equal(exportResponse.status,403,'他人可查看已发布日志，但不能导出作者日志');
+ const published=await api('/api/logs','POST',{draftId:created.data.id,title:'Finished title',logType:'项目日常日志',text:'完成内容',date:today(),taskIds:[]},'u2','p2');assert.equal(published.status,201);assert.equal(published.data.id,created.data.id);assert.equal((await api('/api/state','GET',null,'u2','p2')).data.logDrafts.some(d=>d.id===created.data.id),false);assert.ok((await api('/api/state','GET',null,'u1','p2')).data.logs.some(l=>l.id===created.data.id),'已发布日志对项目其他成员可见');const exportResponse=await fetch(`${base}/api/export?kind=log&id=${encodeURIComponent(published.data.id)}&format=docx`,{headers:{cookie:cookies.u1,'X-Project-Id':'p2'}});assert.equal(exportResponse.status,403,'他人可查看已发布日志，但不能导出作者日志');const leaderExport=await fetch(`${base}/api/export?kind=log&id=${encodeURIComponent(published.data.id)}&format=docx`,{headers:{cookie:cookies.u3,'X-Project-Id':'p2'}});assert.equal(leaderExport.status,403,'项目组长也不能导出其他作者的工作日志');
  const disposable=await api('/api/logs/drafts','PUT',{...draftBody,title:'Delete me'},'u2','p2');assert.equal(disposable.status,200);
  assert.equal((await api('/api/logs/drafts','DELETE',{id:disposable.data.id},'u3','p2')).status,404);
  assert.equal((await api('/api/logs/drafts','DELETE',{id:disposable.data.id},'u2','p2')).status,200);
  assert.equal((await api('/api/state','GET',null,'u2','p2')).data.logDrafts.some(d=>d.id===disposable.data.id),false);
 });
-test('personal log folders and links are private to their owner',async()=>{
+test('uncommitted rich-text draft images stay private and cannot use generic file downloads',async()=>{
+ const uploaded=await uploadEditorImage();assert.equal(uploaded.status,201);const imageId=uploaded.data.id;
+ const peerBeforeSave=(await api('/api/state','GET',null,'u1','p2')).data;assert.equal(peerBeforeSave.files.some(f=>f.id===imageId),false,'未保存的正文图片元数据不能进入其他成员状态');
+ const genericPeer=await fetch(base+`/api/files/download?id=${imageId}&projectId=p2`,{headers:{cookie:cookies.u1}});assert.equal(genericPeer.status,404,'正文图片不能绕过专用权限检查走通用下载');
+ const privateImage=await fetch(base+`/api/editor-images?id=${imageId}&projectId=p2`,{headers:{cookie:cookies.u1}});assert.equal(privateImage.status,403,'未保存图片内容仅上传者可读');
+ const ownImage=await fetch(base+`/api/editor-images?id=${imageId}&projectId=p2`,{headers:{cookie:cookies.u2}});assert.equal(ownImage.status,200,'编辑者可以继续查看自己的待保存图片');
+ const backupResponse=await fetch(base+'/api/backup',{headers:{cookie:cookies.u3,'X-Project-Id':'p2'}});assert.equal(backupResponse.status,200,'组长仍可备份项目');const backupScan=spawnSync('python',['-c','import io,json,sys,zipfile;z=zipfile.ZipFile(io.BytesIO(sys.stdin.buffer.read()));m=json.loads(z.read("manifest.json"));print(any(x.get("id")==sys.argv[1] for x in m["files"]) or any(n.endswith(sys.argv[1]+".png") for n in z.namelist()))',imageId],{input:Buffer.from(await backupResponse.arrayBuffer()),encoding:'utf8'});assert.equal(backupScan.status,0,backupScan.stderr);assert.equal(backupScan.stdout.trim(),'False','项目备份不得包含未保存草稿图片的清单或文件内容');
+ const draft=await api('/api/logs/drafts','PUT',{title:'Private image draft',logType:'项目日常日志',text:'Draft with private image',textHtml:`<p>Draft with private image<img src="/api/editor-images?id=${imageId}&projectId=p2"></p>`,date:today(),taskIds:[]},'u2','p2');assert.equal(draft.status,200);
+ const peerAfterSave=(await api('/api/state','GET',null,'u1','p2')).data;assert.equal(peerAfterSave.files.some(f=>f.id===imageId),false,'私有草稿正文图片元数据不能泄露');
+ const privateDraftImage=await fetch(base+`/api/editor-images?id=${imageId}&projectId=p2`,{headers:{cookie:cookies.u1}});assert.equal(privateDraftImage.status,404,'其他成员不能读取私有草稿正文图片');
+ const genericAfterSave=await fetch(base+`/api/files/download?id=${imageId}&projectId=p2`,{headers:{cookie:cookies.u1}});assert.equal(genericAfterSave.status,404);
+ assert.equal((await api('/api/logs/drafts','DELETE',{id:draft.data.id},'u2','p2')).status,200);
+});
+test('withdrawn log team marks and events stop appearing in shared views and backups',async()=>{
+ const log=await api('/api/logs','POST',{title:'Private after withdrawal',logType:'项目日常日志',text:'Withdrawn content',date:today(),taskIds:[]},'u2','p2');assert.equal(log.status,201);
+ const mark=await api('/api/focus-marks','POST',{scope:'team',targetType:'log',targetId:log.data.id,stars:3,note:'PRIVATE_TEAM_MARK'},'u3','p2');assert.equal(mark.status,200);
+ const before=(await api('/api/state','GET',null,'u3','p2')).data;assert.ok(before.focusMarks.some(x=>x.targetId===log.data.id));
+ assert.equal((await api('/api/logs','DELETE',{id:log.data.id},'u2','p2')).status,200);
+ const peer=(await api('/api/state','GET',null,'u3','p2')).data;assert.equal(peer.logs.some(x=>x.id===log.data.id),false);assert.equal(peer.focusMarks.some(x=>x.targetId===log.data.id),false);assert.ok(!JSON.stringify(peer.events).includes('PRIVATE_TEAM_MARK'));
+ assert.equal((await api('/api/focus-marks','GET',null,'u3','p2')).data.some(x=>x.targetId===log.data.id),false);
+ const timeline=(await api('/api/project-events?limit=100','GET',null,'u3','p2')).data;assert.ok(!timeline.items.some(x=>x.source?.type==='log'&&x.source.id===log.data.id));
+ const backupResponse=await fetch(base+'/api/backup',{headers:{cookie:cookies.u3,'X-Project-Id':'p2'}});assert.equal(backupResponse.status,200);const backupScan=spawnSync('python',['-c','import io,json,sys,zipfile;z=zipfile.ZipFile(io.BytesIO(sys.stdin.buffer.read()));w=json.loads(z.read("manifest.json"))["workspace"];print(any(x.get("targetId")==sys.argv[1] for x in w.get("focusMarks",[])) or "PRIVATE_TEAM_MARK" in json.dumps(w.get("events",[])) or any(x.get("id")==sys.argv[1] for x in w.get("logs",[])))',log.data.id],{input:Buffer.from(await backupResponse.arrayBuffer()),encoding:'utf8'});assert.equal(backupScan.status,0,backupScan.stderr);assert.equal(backupScan.stdout.trim(),'False','共享备份不得暴露撤回草稿的团队关注标记或日志内容');
+});
+test('autosaved task-log drafts cannot bypass current task responsibility',async()=>{
+ const task=(await api('/api/tasks','POST',taskData('u2'),'u3','p2')).data,draft=await api('/api/logs/drafts','PUT',{title:'Private pending task log',logType:'任务日志',text:'Draft body',date:today(),taskIds:[task.id]},'u2','p2');assert.equal(draft.status,200);
+ const reassigned=await api('/api/tasks/action','POST',{id:task.id,version:1,action:'reassign',ownerId:'u1',reason:'Change the responsible member'},'u3','p2');assert.equal(reassigned.status,200);
+ assert.equal((await api('/api/logs/publish','POST',{id:draft.data.id},'u2','p2')).status,409,'自动保存草稿不能走撤回日志的快捷重发接口');
+ assert.equal((await api('/api/logs','POST',{draftId:draft.data.id,title:'Private pending task log',logType:'任务日志',text:'Draft body',date:today(),taskIds:[task.id]},'u2','p2')).status,400,'原负责人不能在改派后发布新的任务日志关联');
+ const ownerState=(await api('/api/state','GET',null,'u2','p2')).data;assert.ok(ownerState.logDrafts.some(x=>x.id===draft.data.id));assert.ok(!ownerState.logs.some(x=>x.id===draft.data.id));
+});test('personal log folders and links are private to their owner',async()=>{
  const task=await api('/api/tasks','POST',taskData('u2'),'u3','p2');assert.equal(task.status,201);
  const folder=await api('/api/log-folders','POST',{action:'create',taskId:task.data.id,name:'验收记录'},'u2','p2');assert.equal(folder.status,200);assert.equal(folder.data.folders.length,1);
  const log=await api('/api/logs','POST',{title:'分类日志',logType:'任务日志',text:'已发布内容',date:today(),taskIds:[task.data.id]},'u2','p2');assert.equal(log.status,201);
